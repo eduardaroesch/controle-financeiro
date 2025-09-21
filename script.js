@@ -131,41 +131,8 @@ async function excluirFornecedor(id) {
 // ==========================
 // Funções de Impressão
 // ==========================
-function handlePrint(sectionId) {
-    showModal("Deseja imprimir este relatório?", true, () => {
-        const sectionsToHide = document.querySelectorAll('main > section:not(#' + sectionId + ')');
-        const originalDisplay = [];
-        
-        // Esconder seções não relacionadas
-        sectionsToHide.forEach(section => {
-            originalDisplay.push(section.style.display);
-            section.style.display = 'none';
-        });
-
-        // Esconder o botão de imprimir
-        const imprimirBotoes = document.querySelector(`#${sectionId} .imprimir-botoes`);
-        if (imprimirBotoes) {
-            imprimirBotoes.style.display = 'none';
-        }
-        
-        // Adicionar um pequeno atraso para o navegador processar as mudanças de estilo
-        setTimeout(() => {
-            window.print();
-        }, 100);
-
-        // Ocultar modal de confirmação
-        hideModal();
-
-        // Restaurar seções após a impressão
-        window.addEventListener('afterprint', () => {
-            sectionsToHide.forEach((section, index) => {
-                section.style.display = originalDisplay[index];
-            });
-            if (imprimirBotoes) {
-                imprimirBotoes.style.display = '';
-            }
-        });
-    });
+function handlePrint() {
+    window.print();
 }
 
 // ==========================
@@ -330,6 +297,7 @@ function startApp() {
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
 
+
     // Expondo funções globais para o HTML
     window.excluirTransacao = excluirTransacao;
     window.excluirFornecedor = excluirFornecedor;
@@ -368,8 +336,8 @@ function startApp() {
 
     filtroMes.addEventListener('change', atualizarInterface);
 
-    btnImprimirMensal.addEventListener('click', () => handlePrint('relatorio-section'));
-    btnImprimirAnual.addEventListener('click', () => handlePrint('relatorio-anual-section'));
+    btnImprimirMensal.addEventListener('click', handlePrint);
+    btnImprimirAnual.addEventListener('click', handlePrint);
 
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) {
@@ -379,4 +347,5 @@ function startApp() {
 }
 
 document.addEventListener('DOMContentLoaded', startApp);
+
 
