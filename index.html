@@ -5,204 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-  <!-- CSS para impressão -->
-  <style>
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      header, nav, .toolbar, #form-section, footer, .modal-overlay, .user-info {
-        display: none !important;
-      }
-      main {
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        border-radius: 0;
-        max-width: none;
-      }
-      #tabela-section {
-        margin-top: 0;
-      }
-      #grafico-section {
-        page-break-before: always;
-      }
-      #relatorio-anual-section {
-        page-break-before: always;
-      }
-      .imprimir-botoes {
-        display: none !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
   <header>
-    <div class="user-info">
-      <h3>Usuário: <span id="user-id">Carregando...</span></h3>
-    </div>
-    <h1 class="titulo-principal">Controle Financeiro CPM</h1>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="projeto.html">Sobre o Projeto</a></li>
-      </ul>
-    </nav>
+    <h1>Controle Financeiro</h1>
   </header>
 
-  <main>
-    <!-- Toolbar -->
-    <section class="toolbar">
-      <div class="filtro-mes">
-        <label for="filtro-mes">Filtrar por Mês:</label>
-        <input type="month" id="filtro-mes">
-      </div>
-      <button class="logout" id="logout-btn">Sair</button>
-    </section>
+  <div class="container">
+    <main>
+      <section id="transacao-section">
+        <h2>Adicionar Lançamento</h2>
+        <form id="transacao-form">
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
+          </div>
+          <div class="form-group">
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="tipo">Tipo</label>
+            <select id="tipo" required>
+              <option value="entrada">Entrada</option>
+              <option value="saida">Saída</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
+          </div>
+          <div class="form-group">
+            <label for="fornecedor">Fornecedor/Origem</label>
+            <select id="fornecedor"></select>
+          </div>
+          <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
+        </form>
+      </section>
 
-    <!-- Formulário de Lançamento -->
-    <section id="form-section">
-      <h2>Novo Lançamento</h2>
-      <form id="transacao-form">
-        <label for="descricao">Descrição:</label>
-        <input type="text" id="descricao" required>
-
-        <label for="valor">Valor:</label>
-        <input type="number" id="valor" step="0.01" required>
-
-        <label for="tipo">Tipo:</label>
-        <select id="tipo" required>
-          <option value="entrada">Entrada</option>
-          <option value="saida">Saída</option>
-        </select>
-
-        <label for="data">Data:</label>
-        <input type="date" id="data" required>
-
-        <label for="fornecedor">Fornecedor:</label>
-        <input type="text" id="fornecedor">
-
-        <button type="submit">Salvar Lançamento</button>
-      </form>
-      <div id="msg-erro"></div>
-    </section>
-
-    <!-- Tabela de Lançamentos -->
-    <section id="tabela-section">
-      <h2>Lançamentos do Mês</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Fornecedor</th>
-            <th>Valor</th>
-            <th>Tipo</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-corpo">
-          <!-- Transações serão adicionadas aqui via JS -->
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Gráfico Mensal -->
-    <section id="grafico-section">
-      <h2>Gráfico Mensal</h2>
-      <canvas id="graficoFinanceiro"></canvas>
-    </section>
-
-    <!-- Relatórios KPI -->
-    <section id="relatorio-section">
-      <h2>Relatório Mensal</h2>
-      <div class="relatorio-grid">
-        <div class="card kpi">
-          <h3>Total de Entradas</h3>
-          <p id="kpi-entradas">R$ 0,00</p>
+      <section id="relatorio-section">
+        <h2>Relatório do Mês</h2>
+        <div class="kpi-container">
+          <div class="card kpi kpi-entradas">
+            <h3>Total Entradas</h3>
+            <p id="kpi-entradas">R$ 0,00</p>
+          </div>
+          <div class="card kpi kpi-saidas">
+            <h3>Total Saídas</h3>
+            <p id="kpi-saidas">R$ 0,00</p>
+          </div>
+          <div class="card kpi kpi-saldo">
+            <h3>Saldo do Mês</h3>
+            <p id="kpi-saldo">R$ 0,00</p>
+          </div>
         </div>
-        <div class="card kpi">
-          <h3>Total de Saídas</h3>
-          <p id="kpi-saidas">R$ 0,00</p>
+        <div class="imprimir-botoes">
+            <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
         </div>
-        <div class="card kpi">
-          <h3>Saldo do Mês</h3>
-          <p id="kpi-saldo">R$ 0,00</p>
+        <div class="form-group">
+          <label for="filtro-mes">Filtrar por Mês</label>
+          <input type="month" id="filtro-mes">
         </div>
-      </div>
-      <div class="imprimir-botoes">
-        <button id="btn-imprimir-mensal">Imprimir Relatório Mensal</button>
-      </div>
-    </section>
+        <div class="tabela-container">
+          <table id="tabela-transacoes">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Fornecedor</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-corpo"></tbody>
+          </table>
+        </div>
+        <canvas id="graficoFinanceiro" class="mt-4"></canvas>
+      </section>
 
-    <!-- Relatório Anual -->
-    <section id="relatorio-anual-section">
-      <h2>Relatório Anual</h2>
-      <table id="tabela-anual">
-        <thead>
-          <tr>
-            <th>Mês</th>
-            <th>Total Entradas</th>
-            <th>Total Saídas</th>
-            <th>Saldo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dados anuais serão adicionados aqui -->
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>Total Anual</th>
-            <th id="total-entradas-anual">R$ 0,00</th>
-            <th id="total-saidas-anual">R$ 0,00</th>
-            <th id="saldo-anual">R$ 0,00</th>
-          </tr>
-        </tfoot>
-      </table>
-      <canvas id="graficoAnual"></canvas>
-      <div class="imprimir-botoes">
-        <button id="btn-imprimir-anual">Imprimir Relatório Anual</button>
-      </div>
-    </section>
+      <section id="fornecedores-section" class="fornecedores-section">
+        <h2>Gerenciar Fornecedores</h2>
+        <form id="fornecedor-form" class="fornecedor-form">
+          <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor" required>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </form>
+        <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
+      </section>
 
-    <!-- Seção de Fornecedores -->
-    <section id="fornecedores-section">
-      <h2>Lista de Fornecedores</h2>
-      <form id="fornecedor-form" class="fornecedor-form">
-        <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor">
-        <button type="submit">Adicionar</button>
-      </form>
-      <ul id="lista-fornecedores" class="lista-fornecedores">
-        <!-- Fornecedores serão adicionados aqui via JS -->
-      </ul>
-    </section>
-  </main>
+      <section id="relatorio-anual-section">
+        <h2>Relatório Anual</h2>
+        <table id="tabela-anual">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Total Entradas</th>
+              <th>Total Saídas</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-anual-corpo"></tbody>
+          <tfoot>
+            <tr>
+              <th>Total Anual</th>
+              <th id="total-entradas-anual">R$ 0,00</th>
+              <th id="total-saidas-anual">R$ 0,00</th>
+              <th id="saldo-anual">R$ 0,00</th>
+            </tr>
+          </tfoot>
+        </table>
+        <canvas id="graficoAnual" class="mt-4"></canvas>
+        <div class="imprimir-botoes">
+            <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 Projeto Extensionista</p>
-  </footer>
-
-  <!-- Modal e Overlay -->
   <div id="modal-overlay" class="modal-overlay">
     <div class="modal-content">
       <h3 id="modal-titulo"></h3>
       <p id="modal-mensagem"></p>
-      <div id="modal-botoes">
-        <button id="modal-btn-confirmar">Confirmar</button>
-        <button id="modal-btn-cancelar">Cancelar</button>
+      <div class="modal-buttons">
+        <button id="modal-btn-confirmar" class="btn btn-primary">Confirmar</button>
+        <button id="modal-btn-cancelar" class="btn">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <!-- Indicador de Carregamento -->
-  <div id="loading-spinner" class="loading-spinner"></div>
+  <div id="loading-spinner">
+    <div class="spinner"></div>
+  </div>
 
-  <script type="module" src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
-
-
