@@ -306,17 +306,29 @@ function renderizarFornecedores() {
 // Listeners e Inicialização
 // ==========================
 function startApp() {
+    showLoadingSpinner();
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
+
+    let transacoesCarregadas = false;
+    let fornecedoresCarregados = false;
 
     onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
         transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         atualizarInterface();
+        transacoesCarregadas = true;
+        if (fornecedoresCarregados) {
+            hideLoadingSpinner();
+        }
     });
 
     onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
         fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderizarFornecedores();
+        fornecedoresCarregados = true;
+        if (transacoesCarregadas) {
+            hideLoadingSpinner();
+        }
     });
 
     form.addEventListener('submit', (e) => {
@@ -364,8 +376,3 @@ function startApp() {
 
 // Inicia o aplicativo diretamente, sem necessidade de autenticação.
 startApp();
-
-
-
-
-
