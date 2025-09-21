@@ -1,393 +1,407 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+import { setLogLevel } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+// Ativar logging para debug
+setLogLevel('debug');
 
 // ==========================
-// Firebase Config
+// Configuração do Firebase
 // ==========================
-const firebaseConfig = {
-  apiKey: "AIzaSyA8Yw9wnKcgSK-svf37hnfzXZyDhtbj3Ro",
-  authDomain: "controle-financeiro-emei.firebaseapp.com",
-  projectId: "controle-financeiro-emei",
-  storageBucket: "controle-financeiro-emei.firebasestorage.app",
-  messagingSenderId: "520133382523",
-  appId: "1:520133382523:web:952d313fd881bad49cedde"
-};
-
-const appFirebase = initializeApp(firebaseConfig);
-const db = getFirestore(appFirebase);
+const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const userIdDisplay = document.getElementById('user-id');
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+let userId = null;
 
 // ==========================
-// Utilidades
+// Autenticação
+// ==========================
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        userId = user.uid;
+        userIdDisplay.textContent = userId;
+        console.log("Usuário autenticado:", userId);
+        startApp();
+    } else {
+        userId = null;
+        userIdDisplay.textContent = 'N/A';
+        console.log("Nenhum usuário logado. Tentando autenticação...");
+        try {
+            if (typeof __initial_auth_token !== 'undefined') {
+                await signInWithCustomToken(auth, __initial_auth_token);
+                console.log("Autenticação com token personalizada bem-sucedida.");
+            } else {
+                await signInAnonymously(auth);
+                console.log("Autenticação anônima bem-sucedida.");
+            }
+        } catch (error) {
+            console.error("Erro na autenticação:", error);
+            showModal("Erro de autenticação: " + error.message, false);
+        }
+    }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    signOut(auth).then(() => {
+        console.log("Usuário desconectado.");
+    }).catch((error) => {
+        console.error("Erro ao fazer logout:", error);
+    });
+});
+
+// ==========================
+// Elementos e Utilidades
 // ==========================
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const hojeISO = () => new Date().toISOString().slice(0,10);
-const yyyymm = (isoDate) => (isoDate || '').slice(0,7);
-
-// ==========================
-// Elementos do app
-// ==========================
-const loginForm = document.getElementById('login-form');
-const loginSection = document.getElementById('login-section');
-const app = document.getElementById('app');
-const btnLogout = document.getElementById('logout');
-
-const form = document.getElementById('transaction-form');
-const tabelaCorpo = document.getElementById('tabela-corpo');
-const saldoSpan = document.getElementById('saldo');
+const hojeISO = () => new Date().toISOString().slice(0, 10);
+const yyyymm = (isoDate) => (isoDate || '').slice(0, 7);
+const form = document.getElementById('transacao-form');
 const inputData = document.getElementById('data');
-const inputDescricao = document.getElementById('descricao');
-const inputValor = document.getElementById('valor');
-const selectTipo = document.getElementById('tipo');
-const selectFornecedor = document.getElementById('fornecedor');
+const tabelaCorpo = document.getElementById('tabela-corpo');
 const filtroMes = document.getElementById('filtro-mes');
-
 const kpiEntradas = document.getElementById('kpi-entradas');
 const kpiSaidas = document.getElementById('kpi-saidas');
 const kpiSaldo = document.getElementById('kpi-saldo');
-
+const graficoMensalCtx = document.getElementById('graficoFinanceiro').getContext('2d');
 const tabelaAnualCorpo = document.getElementById('tabela-anual').querySelector('tbody');
 const totalEntradasAnual = document.getElementById('total-entradas-anual');
 const totalSaidasAnual = document.getElementById('total-saidas-anual');
 const saldoAnual = document.getElementById('saldo-anual');
-
-const fornecedorForm = document.getElementById('fornecedor-form');
-const novoFornecedorInput = document.getElementById('novo-fornecedor');
-const listaFornecedoresUL = document.getElementById('lista-fornecedores');
-
-const msgErro = document.getElementById('mensagem-erro');
-
+const formFornecedor = document.getElementById('fornecedor-form');
+const listaFornecedores = document.getElementById('lista-fornecedores');
+const inputNovoFornecedor = document.getElementById('novo-fornecedor');
 const btnImprimirMensal = document.getElementById('btn-imprimir-mensal');
 const btnImprimirAnual = document.getElementById('btn-imprimir-anual');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitulo = document.getElementById('modal-titulo');
+const modalMensagem = document.getElementById('modal-mensagem');
+const modalBtnConfirmar = document.getElementById('modal-btn-confirmar');
+const modalBtnCancelar = document.getElementById('modal-btn-cancelar');
+const loadingSpinner = document.getElementById('loading-spinner');
 
-// ==========================
-// Estado
-// ==========================
 let transacoes = [];
 let fornecedores = [];
+let graficoMensal;
+let graficoAnual;
 
 // ==========================
-// Funções Firebase
+// Funções de UI
 // ==========================
-async function carregarDados() {
-  transacoes = [];
-  fornecedores = [];
-
-  const snapTransacoes = await getDocs(collection(db, "transacoes"));
-  snapTransacoes.forEach(docSnap => transacoes.push({ id: docSnap.id, ...docSnap.data() }));
-
-  const snapFornecedores = await getDocs(collection(db, "fornecedores"));
-  snapFornecedores.forEach(docSnap => fornecedores.push(docSnap.data().nome));
-
-  renderFornecedores();
-  atualizarInterface();
-  atualizarRelatorioAnual();
+function showLoadingSpinner() {
+    loadingSpinner.classList.add('active');
 }
 
-async function salvarTransacao(dados) {
-  await addDoc(collection(db, "transacoes"), dados);
-  await carregarDados();
-  mostrarMensagem('Lançamento adicionado com sucesso!');
+function hideLoadingSpinner() {
+    loadingSpinner.classList.remove('active');
+}
+
+function showModal(message, isConfirm = false, onConfirm = null) {
+    modalMensagem.textContent = message;
+    modalBtnConfirmar.style.display = isConfirm ? 'inline-block' : 'none';
+    modalBtnCancelar.style.display = isConfirm ? 'inline-block' : 'none';
+    modalOverlay.classList.add('active');
+
+    modalBtnConfirmar.onclick = () => {
+        if (onConfirm) onConfirm();
+        hideModal();
+    };
+    modalBtnCancelar.onclick = () => {
+        hideModal();
+    };
+}
+
+function hideModal() {
+    modalOverlay.classList.remove('active');
+}
+
+// ==========================
+// Funções Firestore
+// ==========================
+const getTransacoesCollection = () => collection(db, `artifacts/${appId}/users/${userId}/transacoes`);
+const getFornecedoresCollection = () => collection(db, `artifacts/${appId}/users/${userId}/fornecedores`);
+
+async function salvarTransacao(transacao) {
+    try {
+        await addDoc(getTransacoesCollection(), transacao);
+        showModal("Lançamento salvo com sucesso!");
+    } catch (e) {
+        showModal("Erro ao salvar lançamento: " + e.message, false);
+    }
 }
 
 async function excluirTransacao(id) {
-  await deleteDoc(doc(db, "transacoes", id));
-  await carregarDados();
-  mostrarMensagem('Lançamento removido.');
+    showModal("Tem certeza que deseja excluir esta transação?", true, async () => {
+        try {
+            await deleteDoc(doc(getTransacoesCollection(), id));
+            showModal("Lançamento excluído com sucesso!");
+        } catch (e) {
+            showModal("Erro ao excluir lançamento: " + e.message, false);
+        }
+    });
 }
 
-async function adicionarFornecedor(nome) {
-  const n = (nome || '').trim();
-  if (!n) return;
-  if (!fornecedores.includes(n)) {
-    await addDoc(collection(db, "fornecedores"), { nome: n });
-    await carregarDados();
-    mostrarMensagem('Fornecedor adicionado.');
-  } else {
-    alert('Este fornecedor já existe.');
-  }
-}
-
-async function removerFornecedor(index) {
-  const snap = await getDocs(collection(db, "fornecedores"));
-  let i = 0;
-  snap.forEach(async (docSnap) => {
-    if (i === index) await deleteDoc(doc(db, "fornecedores", docSnap.id));
-    i++;
-  });
-  await carregarDados();
-  mostrarMensagem('Fornecedor removido.');
-}
-
-// ==========================
-// Gráfico Mensal
-// ==========================
-const ctx = document.getElementById('graficoFinanceiro').getContext('2d');
-let grafico = new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: ['Entradas', 'Saídas'],
-    datasets: [{ data: [0,0], backgroundColor: ['#6a0dad','#e74c3c'], borderWidth: 1 }]
-  },
-  options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
-});
-
-// ==========================
-// Gráfico Anual
-// ==========================
-const ctxAnual = document.getElementById('graficoAnual').getContext('2d');
-const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-let graficoAnual = new Chart(ctxAnual, {
-  type: 'bar',
-  data: {
-    labels: meses,
-    datasets: [
-      { label: 'Entradas', data: [], backgroundColor: '#6a0dad' },
-      { label: 'Saídas', data: [], backgroundColor: '#e74c3c' }
-    ]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: { stacked: true },
-      y: { stacked: true }
+async function salvarFornecedor(nome) {
+    try {
+        await addDoc(getFornecedoresCollection(), { nome });
+        inputNovoFornecedor.value = '';
+    } catch (e) {
+        showModal("Erro ao salvar fornecedor: " + e.message, false);
     }
-  }
-});
-
-
-// ==========================
-// Inicialização Inputs
-// ==========================
-inputData.value = hojeISO();
-if (!filtroMes.value) filtroMes.value = hojeISO().slice(0,7);
-
-// ==========================
-// Render fornecedores
-// ==========================
-function renderFornecedores() {
-  selectFornecedor.innerHTML = '<option value="" disabled selected>Selecione um fornecedor</option>';
-  fornecedores.forEach(nome=>{
-    const opt = document.createElement('option');
-    opt.value = nome;
-    opt.textContent = nome;
-    selectFornecedor.appendChild(opt);
-  });
-
-  listaFornecedoresUL.innerHTML = '';
-  fornecedores.forEach((nome, idx)=>{
-    const li = document.createElement('li');
-    const span = document.createElement('span');
-    span.textContent = nome;
-
-    const btn = document.createElement('button');
-    btn.textContent = 'Remover';
-    btn.className = 'remover';
-    btn.onclick = ()=>removerFornecedor(idx);
-
-    li.appendChild(span);
-    li.appendChild(btn);
-    listaFornecedoresUL.appendChild(li);
-  });
 }
 
-fornecedorForm.addEventListener('submit', e=>{
-  e.preventDefault();
-  adicionarFornecedor(novoFornecedorInput.value);
-  novoFornecedorInput.value = '';
-});
-
-// ==========================
-// CRUD Transações
-// ==========================
-form.addEventListener('submit', e=>{
-  e.preventDefault();
-  const descricao = inputDescricao.value.trim();
-  const valor = parseFloat(inputValor.value);
-  const tipo = selectTipo.value;
-  const data = inputData.value;
-  const fornecedor = selectFornecedor.value;
-
-  if(!descricao||!data||isNaN(valor)){
-    msgErro.textContent='Preencha todos os campos corretamente.';
-    msgErro.style.display='block';
-    return;
-  }
-  if(valor<=0){
-    msgErro.textContent='O valor deve ser maior que zero.';
-    msgErro.style.display='block';
-    return;
-  }
-
-  const hoje = new Date();
-  const dataObj = new Date(data+'T00:00:00');
-  if(dataObj>hoje){
-    msgErro.textContent='A data não pode ser no futuro.';
-    msgErro.style.display='block';
-    return;
-  }
-
-  msgErro.style.display='none';
-  salvarTransacao({descricao,valor,tipo,data,fornecedor});
-  form.reset();
-  inputData.value=hojeISO();
-});
-
-// ==========================
-// Atualizar Interface Mensal
-// ==========================
-function atualizarInterface(){
-  const alvoMes = filtroMes.value;
-  const lista = transacoes.filter(t=>yyyymm(t.data)===alvoMes);
-
-  tabelaCorpo.innerHTML='';
-  let totalEntradas=0, totalSaidas=0;
-
-  lista.sort((a,b)=>a.data.localeCompare(b.data));
-  lista.forEach(t=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${new Date(t.data+'T00:00:00').toLocaleDateString('pt-BR')}</td>
-      <td>${t.descricao}</td>
-      <td>${t.fornecedor||'-'}</td>
-      <td>${BRL.format(t.valor)}</td>
-      <td class="${t.tipo}">${t.tipo}</td>
-      <td><button class="excluir" onclick="excluirTransacao('${t.id}')">Excluir</button></td>
-    `;
-    tabelaCorpo.appendChild(tr);
-    if(t.tipo==='entrada') totalEntradas+=t.valor;
-    else totalSaidas+=t.valor;
-  });
-
-  const saldo=totalEntradas-totalSaidas;
-  saldoSpan.textContent=BRL.format(saldo);
-  kpiEntradas.textContent=BRL.format(totalEntradas);
-  kpiSaidas.textContent=BRL.format(totalSaidas);
-  kpiSaldo.textContent=BRL.format(saldo);
-  grafico.data.datasets[0].data=[totalEntradas,totalSaidas];
-  grafico.update();
-}
-
-// ==========================
-// Atualizar Relatório Anual
-// ==========================
-function atualizarRelatorioAnual() {
-  const anoAtual = new Date().getFullYear().toString();
-  const dadosAnuais = {};
-
-  transacoes.forEach(t => {
-    const [ano, mes] = t.data.split('-');
-    if (ano === anoAtual) {
-      if (!dadosAnuais[mes]) {
-        dadosAnuais[mes] = { entradas: 0, saidas: 0 };
-      }
-      if (t.tipo === 'entrada') {
-        dadosAnuais[mes].entradas += t.valor;
-      } else {
-        dadosAnuais[mes].saidas += t.valor;
-      }
-    }
-  });
-
-  tabelaAnualCorpo.innerHTML = '';
-  let totalEntradasGeral = 0;
-  let totalSaidasGeral = 0;
-  const dadosGraficoEntradas = [];
-  const dadosGraficoSaidas = [];
-
-  for (let i = 1; i <= 12; i++) {
-    const mesFormatado = i.toString().padStart(2, '0');
-    const dadosMes = dadosAnuais[mesFormatado] || { entradas: 0, saidas: 0 };
-    const saldoMes = dadosMes.entradas - dadosMes.saidas;
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${meses[i - 1]}</td>
-      <td>${BRL.format(dadosMes.entradas)}</td>
-      <td>${BRL.format(dadosMes.saidas)}</td>
-      <td>${BRL.format(saldoMes)}</td>
-    `;
-    tabelaAnualCorpo.appendChild(tr);
-
-    totalEntradasGeral += dadosMes.entradas;
-    totalSaidasGeral += dadosMes.saidas;
-
-    dadosGraficoEntradas.push(dadosMes.entradas);
-    dadosGraficoSaidas.push(dadosMes.saidas);
-  }
-
-  totalEntradasAnual.textContent = BRL.format(totalEntradasGeral);
-  totalSaidasAnual.textContent = BRL.format(totalSaidasGeral);
-  saldoAnual.textContent = BRL.format(totalEntradasGeral - totalSaidasGeral);
-
-  graficoAnual.data.datasets[0].data = dadosGraficoEntradas;
-  graficoAnual.data.datasets[1].data = dadosGraficoSaidas;
-  graficoAnual.update();
+async function excluirFornecedor(id) {
+    showModal("Tem certeza que deseja excluir este fornecedor?", true, async () => {
+        try {
+            await deleteDoc(doc(getFornecedoresCollection(), id));
+            showModal("Fornecedor excluído com sucesso!");
+        } catch (e) {
+            showModal("Erro ao excluir fornecedor: " + e.message, false);
+        }
+    });
 }
 
 // ==========================
 // Funções de Impressão
 // ==========================
-async function imprimirRelatorio(sectionId, title) {
-    const section = document.getElementById(sectionId);
-    const cssContent = await fetch('style.css').then(response => response.text());
-    
-    const printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>${title}</title>
-                <style>${cssContent}</style>
-            </head>
-            <body>
-                ${section.outerHTML}
-                <script>
-                    window.onload = () => {
-                        window.print();
-                        window.close();
-                    };
-                </script>
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-}
+function handlePrint(sectionId) {
+    showModal("Deseja imprimir este relatório?", true, () => {
+        const sectionsToHide = document.querySelectorAll('main > section:not(#' + sectionId + ')');
+        const originalDisplay = [];
+        
+        // Esconder seções não relacionadas
+        sectionsToHide.forEach(section => {
+            originalDisplay.push(section.style.display);
+            section.style.display = 'none';
+        });
 
-function imprimirRelatorioMensal() {
-    const mes = filtroMes.value;
-    const mesNome = meses[parseInt(mes.slice(5, 7)) - 1];
-    const ano = mes.slice(0, 4);
-    imprimirRelatorio('relatorio-section', `Relatório Mensal - ${mesNome}/${ano}`);
-}
+        // Esconder o botão de imprimir
+        document.querySelector(`#${sectionId} .imprimir-botoes`).style.display = 'none';
+        
+        // Adicionar um pequeno atraso para o navegador processar as mudanças de estilo
+        setTimeout(() => {
+            window.print();
+        }, 100);
 
-function imprimirRelatorioAnual() {
-    const ano = new Date().getFullYear();
-    imprimirRelatorio('relatorio-anual-section', `Relatório Anual - ${ano}`);
+        // Ocultar modal de confirmação
+        hideModal();
+
+        // Restaurar seções após a impressão
+        window.addEventListener('afterprint', () => {
+            sectionsToHide.forEach((section, index) => {
+                section.style.display = originalDisplay[index];
+            });
+            document.querySelector(`#${sectionId} .imprimir-botoes`).style.display = '';
+        });
+    });
 }
 
 // ==========================
-// Mensagem de confirmação
+// Funções de Renderização
 // ==========================
-function mostrarMensagem(msg){
-  alert(msg);
+function atualizarInterface() {
+    const alvoMes = filtroMes.value;
+    const lista = transacoes.filter(t => yyyymm(t.data) === alvoMes);
+
+    tabelaCorpo.innerHTML = '';
+    let totalEntradas = 0, totalSaidas = 0;
+
+    lista.sort((a, b) => a.data.localeCompare(b.data));
+    lista.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${new Date(t.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
+            <td>${t.descricao}</td>
+            <td>${t.fornecedor || '-'}</td>
+            <td>${BRL.format(t.valor)}</td>
+            <td class="${t.tipo}">${t.tipo}</td>
+            <td><button class="excluir" data-id="${t.id}">Excluir</button></td>
+        `;
+        tabelaCorpo.appendChild(tr);
+        if (t.tipo === 'entrada') totalEntradas += t.valor;
+        else totalSaidas += t.valor;
+    });
+
+    const saldo = totalEntradas - totalSaidas;
+    kpiEntradas.textContent = BRL.format(totalEntradas);
+    kpiSaidas.textContent = BRL.format(totalSaidas);
+    kpiSaldo.textContent = BRL.format(saldo);
+
+    atualizarGraficoMensal(lista);
+    renderizarTabelaAnual();
+    renderizarFornecedores();
+}
+
+function atualizarGraficoMensal(lista) {
+    if (graficoMensal) graficoMensal.destroy();
+    const entradas = lista.filter(t => t.tipo === 'entrada').reduce((sum, t) => sum + t.valor, 0);
+    const saidas = lista.filter(t => t.tipo === 'saida').reduce((sum, t) => sum + t.valor, 0);
+
+    graficoMensal = new Chart(graficoMensalCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Entradas', 'Saídas'],
+            datasets: [{
+                label: 'Valores Mensais',
+                data: [entradas, saidas],
+                backgroundColor: ['#1e8e3e', '#d93025'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+function renderizarTabelaAnual() {
+    const dadosAnuais = {};
+    let totalEntradasAnualCalc = 0, totalSaidasAnualCalc = 0;
+
+    transacoes.forEach(t => {
+        const mesAno = yyyymm(t.data);
+        if (!dadosAnuais[mesAno]) {
+            dadosAnuais[mesAno] = { entradas: 0, saidas: 0 };
+        }
+        if (t.tipo === 'entrada') {
+            dadosAnuais[mesAno].entradas += t.valor;
+            totalEntradasAnualCalc += t.valor;
+        } else {
+            dadosAnuais[mesAno].saidas += t.valor;
+            totalSaidasAnualCalc += t.valor;
+        }
+    });
+
+    tabelaAnualCorpo.innerHTML = '';
+    const meses = Object.keys(dadosAnuais).sort();
+    meses.forEach(mesAno => {
+        const dados = dadosAnuais[mesAno];
+        const saldo = dados.entradas - dados.saidas;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${mesAno}</td>
+            <td>${BRL.format(dados.entradas)}</td>
+            <td>${BRL.format(dados.saidas)}</td>
+            <td>${BRL.format(saldo)}</td>
+        `;
+        tabelaAnualCorpo.appendChild(tr);
+    });
+
+    totalEntradasAnual.textContent = BRL.format(totalEntradasAnualCalc);
+    totalSaidasAnual.textContent = BRL.format(totalSaidasAnualCalc);
+    saldoAnual.textContent = BRL.format(totalEntradasAnualCalc - totalSaidasAnualCalc);
+
+    atualizarGraficoAnual(dadosAnuais);
+}
+
+function atualizarGraficoAnual(dadosAnuais) {
+    if (graficoAnual) graficoAnual.destroy();
+    const meses = Object.keys(dadosAnuais).sort();
+    const entradas = meses.map(m => dadosAnuais[m].entradas);
+    const saidas = meses.map(m => dadosAnuais[m].saidas);
+
+    graficoAnual = new Chart(document.getElementById('graficoAnual').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Entradas',
+                data: entradas,
+                borderColor: '#1e8e3e',
+                fill: false,
+                tension: 0.1
+            }, {
+                label: 'Saídas',
+                data: saidas,
+                borderColor: '#d93025',
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+function renderizarFornecedores() {
+    listaFornecedores.innerHTML = '';
+    fornecedores.forEach(f => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${f.nome}</span><button class="remover" data-id="${f.id}">Remover</button>`;
+        listaFornecedores.appendChild(li);
+    });
 }
 
 // ==========================
-// Event Listeners
+// Listeners e Inicialização
 // ==========================
-filtroMes.addEventListener('input', atualizarInterface);
-if (btnImprimirMensal) btnImprimirMensal.addEventListener('click', imprimirRelatorioMensal);
-if (btnImprimirAnual) btnImprimirAnual.addEventListener('click', imprimirRelatorioAnual);
-window.onload = carregarDados;
+function startApp() {
+    inputData.value = hojeISO();
+    filtroMes.value = yyyymm(hojeISO());
 
-// ==========================
-// Removendo código de login obsoleto
-// ==========================
-if(loginSection) loginSection.remove();
-if(loginForm) loginForm.remove();
-if(btnLogout) btnLogout.addEventListener('click', () => {
-    sessionStorage.removeItem('logado');
-    app.style.display = 'none';
-    loginSection.style.display = 'flex';
-});
+    onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
+        transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        atualizarInterface();
+    });
+
+    onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
+        fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderizarFornecedores();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const transacao = {
+            descricao: document.getElementById('descricao').value,
+            valor: parseFloat(document.getElementById('valor').value),
+            tipo: document.getElementById('tipo').value,
+            data: document.getElementById('data').value,
+            fornecedor: document.getElementById('fornecedor').value || null
+        };
+        salvarTransacao(transacao);
+        form.reset();
+    });
+
+    formFornecedor.addEventListener('submit', (e) => {
+        e.preventDefault();
+        salvarFornecedor(inputNovoFornecedor.value);
+    });
+
+    tabelaCorpo.addEventListener('click', (e) => {
+        if (e.target.classList.contains('excluir')) {
+            excluirTransacao(e.target.dataset.id);
+        }
+    });
+
+    listaFornecedores.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remover')) {
+            excluirFornecedor(e.target.dataset.id);
+        }
+    });
+
+    filtroMes.addEventListener('change', atualizarInterface);
+
+    btnImprimirMensal.addEventListener('click', () => handlePrint('relatorio-section'));
+    btnImprimirAnual.addEventListener('click', () => handlePrint('relatorio-anual-section'));
+
+    // Fechar modal ao clicar no overlay
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        hideModal();
+      }
+    });
+}
+
 
 
