@@ -24,35 +24,35 @@
 
   <div class="container">
     <main>
-      <section id="transacao-section">
-        <h2>Adicionar Lançamento</h2>
-        <form id="transacao-form">
-          <div class="form-group">
+<section id="transacao-section">
+    <h2>Adicionar Lançamento</h2>
+    <form id="transacao-form">
+        <div class="form-group">
             <label for="descricao">Descrição</label>
             <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label for="valor">Valor (R$)</label>
             <input type="number" id="valor" step="0.01" min="0" required>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label for="tipo">Tipo</label>
             <select id="tipo" required>
-              <option value="entrada">Entrada</option>
-              <option value="saida">Saída</option>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
             </select>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label for="data">Data</label>
             <input type="date" id="data" required>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label for="fornecedor">Fornecedor/Origem</label>
             <select id="fornecedor"></select>
-          </div>
-          <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
-        </form>
-      </section>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
+    </form>
+</section>
 
       <section id="relatorio-section">
         <h2>Relatório do Mês</h2>
@@ -152,6 +152,7 @@
   <script type="module" src="./script.js"></script>
 </body>
 </html>
+
 
 
 
