@@ -178,13 +178,13 @@ button.excluir:hover { background: #c0392b; }
 
   display: flex;
   flex-direction: column;
-  align-items: center;    
+  align-items: center;  
 }
 
 #graficoFinanceiro {
-  max-width: auto;    
+  max-width: auto;  
   width: 100%;      
-  height: auto;      
+  height: auto;     
 }
 
 /* Relatório e Relatório ANUAL */
@@ -255,31 +255,6 @@ button.excluir:hover { background: #c0392b; }
 }
 
 
-/* Estilos de impressão */
-@media print {
-    body {
-        background: #fff;
-        color: #000;
-        margin: 0;
-        padding: 0;
-    }
-
-    .no-print {
-        display: none !important;
-    }
-
-    /* Oculta apenas a seção de relatório anual ao imprimir o relatório mensal */
-    #relatorio-anual-section {
-        display: none;
-    }
-
-    /* Oculta apenas a seção de relatório mensal ao imprimir o relatório anual */
-    #relatorio-section {
-        display: none;
-    }
-}
-
-
 /* Fornecedores */
 #fornecedores-section { margin-top: 26px; }
 .fornecedor-form { display: flex; gap: 10px; margin-bottom: 12px; }
@@ -315,4 +290,3 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
         grid-column: auto;
     }
 }
-
