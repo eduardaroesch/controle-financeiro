@@ -131,10 +131,25 @@ async function excluirFornecedor(id) {
 // ==========================
 // Funções de Impressão
 // ==========================
-function handlePrint() {
-    window.print();
-}
+function handlePrint(relatorioId) {
+    // Esconde a seção que não será impressa
+    if (relatorioId === 'relatorio-mensal') {
+        document.getElementById('relatorio-anual-section').classList.add('no-print');
+        document.getElementById('relatorio-section').classList.remove('no-print');
+    } else if (relatorioId === 'relatorio-anual') {
+        document.getElementById('relatorio-section').classList.add('no-print');
+        document.getElementById('relatorio-anual-section').classList.remove('no-print');
+    }
 
+    // Espera um momento para o navegador aplicar as mudanças de estilo
+    setTimeout(() => {
+        window.print();
+        
+        // Restaura as classes após a impressão para a página voltar ao normal
+        document.getElementById('relatorio-mensal-section').classList.remove('no-print');
+        document.getElementById('relatorio-anual-section').classList.remove('no-print');
+    }, 100);
+}
 // ==========================
 // Funções de Renderização
 // ==========================
@@ -336,8 +351,9 @@ function startApp() {
 
     filtroMes.addEventListener('change', atualizarInterface);
 
-    btnImprimirMensal.addEventListener('click', handlePrint);
-    btnImprimirAnual.addEventListener('click', handlePrint);
+    // Listeners dos botões de impressão
+btnImprimirMensal.addEventListener('click', () => handlePrint('relatorio-mensal'));
+btnImprimirAnual.addEventListener('click', () => handlePrint('relatorio-anual'));
 
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) {
@@ -347,5 +363,6 @@ function startApp() {
 }
 
 document.addEventListener('DOMContentLoaded', startApp);
+
 
 
