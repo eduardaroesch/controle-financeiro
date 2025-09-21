@@ -115,41 +115,47 @@ ul, li {
 .logout:hover { background: #4b0082; }
 
 /* Form Lançamento */
-/* Form Lançamento */
-#form-section form {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr; /* 4 colunas proporcionais */
-  gap: 12px;
-  margin-bottom: 20px;
-  align-items: end; /* alinha rótulos e inputs */
+#transacao-section form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: end;
 }
 
-#form-section label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #6a0dad;
+#transacao-section .form-group {
+    display: flex;
+    flex-direction: column;
 }
 
-#form-section input,
-#form-section select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
+#transacao-section label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6a0dad;
+    margin-bottom: 6px; /* Adicionado para um melhor espaçamento */
 }
 
-#form-section button {
-  grid-column: 1 / -1; /* botão ocupa toda a largura */
-  padding: 12px 16px;
-  background: #6a0dad;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.3s;
+#transacao-section input,
+#transacao-section select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
 }
-#form-section button:hover {
-  background: #4b0082;
+
+#transacao-section button {
+    grid-column: 1 / -1;
+    padding: 12px 16px;
+    background: #6a0dad;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#transacao-section button:hover {
+    background: #4b0082;
 }
 
 /* Tabela */
@@ -275,3 +281,4 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
   #form-section form { grid-template-columns: 1fr 1fr; }
   .relatorio-grid { grid-template-columns: 1fr; }
 }
+
