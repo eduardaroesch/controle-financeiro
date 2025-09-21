@@ -56,6 +56,9 @@ const listaFornecedoresUL = document.getElementById('lista-fornecedores');
 
 const msgErro = document.getElementById('mensagem-erro');
 
+const btnImprimirMensal = document.getElementById('btn-imprimir-mensal');
+const btnImprimirAnual = document.getElementById('btn-imprimir-anual');
+
 // ==========================
 // Estado
 // ==========================
@@ -322,6 +325,46 @@ function atualizarRelatorioAnual() {
 }
 
 // ==========================
+// Funções de Impressão
+// ==========================
+async function imprimirRelatorio(sectionId, title) {
+    const section = document.getElementById(sectionId);
+    const cssContent = await fetch('style.css').then(response => response.text());
+    
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${title}</title>
+                <style>${cssContent}</style>
+            </head>
+            <body>
+                ${section.outerHTML}
+                <script>
+                    window.onload = () => {
+                        window.print();
+                        window.close();
+                    };
+                </script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
+function imprimirRelatorioMensal() {
+    const mes = filtroMes.value;
+    const mesNome = meses[parseInt(mes.slice(5, 7)) - 1];
+    const ano = mes.slice(0, 4);
+    imprimirRelatorio('relatorio-section', `Relatório Mensal - ${mesNome}/${ano}`);
+}
+
+function imprimirRelatorioAnual() {
+    const ano = new Date().getFullYear();
+    imprimirRelatorio('relatorio-anual-section', `Relatório Anual - ${ano}`);
+}
+
+// ==========================
 // Mensagem de confirmação
 // ==========================
 function mostrarMensagem(msg){
@@ -332,6 +375,8 @@ function mostrarMensagem(msg){
 // Event Listeners
 // ==========================
 filtroMes.addEventListener('input', atualizarInterface);
+if (btnImprimirMensal) btnImprimirMensal.addEventListener('click', imprimirRelatorioMensal);
+if (btnImprimirAnual) btnImprimirAnual.addEventListener('click', imprimirRelatorioAnual);
 window.onload = carregarDados;
 
 // ==========================
@@ -344,4 +389,5 @@ if(btnLogout) btnLogout.addEventListener('click', () => {
     app.style.display = 'none';
     loginSection.style.display = 'flex';
 });
+
 
