@@ -1,270 +1,12 @@
 /* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+
+body { 
+  background: #f4f0fa; 
+  color: #333; 
+  line-height: 1.6; 
 }
 
-body {
-    background: #f4f0fa;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Estilos para Mobile (padrão) */
-header {
-    background: linear-gradient(135deg, #f4ecf9, #9b59b6);
-    color: #fff;
-    padding: 24px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.section_logo-container {
-    height: 50px;
-    width: auto;
-    margin: auto 0;
-    display: inline;
-}
-
-.logo-emei {
-    height: 100%;
-    max-width: 100%;
-    vertical-align: middle;
-}
-
-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 10px;
-}
-
-a,
-.btn {
-    transition: all 300ms ease;
-}
-
-.nav-links, .nav-links-sobre {
-    font-size: 1.2rem;
-    list-style: none;
-    padding: 5px;
-}
-
-a {
-    text-decoration: none;
-    color: #9b59b6;
-}
-
-a:hover {
-    color: #6a0dad;
-    text-decoration: underline;
-    text-underline-offset: 0.5rem;
-    text-decoration-color: var(--borda-clara);
-}
-
-.nav-links-sobre:hover {
-    color: #fff;
-}
-
-main {
-    max-width: 1100px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-.titulo-principal {
-    color: #8821b7;
-}
-
-h1, h2 {
-    color: #6a0dad;
-    text-align: center;
-}
-
-p {
-    text-align: center;
-    margin: 10px;
-}
-
-ul, li {
-    text-align: center;
-    list-style: disc;
-    list-style-position: inside;
-    padding: 5px;
-}
-
-.logo-emei {
-    height: 70px;
-    vertical-align: middle;
-    margin-right: 15px;
-}
-
-/* Toolbar */
-.toolbar { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-.filtro-mes label { display: block; font-size: 0.9rem; color: #6a0dad; margin-bottom: 6px; }
-#filtro-mes { padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.logout { padding: 10px 14px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
-.logout:hover { background: #4b0082; }
-
-/* Form Lançamento */
-#form-section form {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 12px;
-    margin-bottom: 20px;
-    align-items: end;
-}
-
-#form-section label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #6a0dad;
-}
-
-#form-section input,
-#form-section select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 100%;
-}
-
-#form-section button {
-    grid-column: 1 / -1;
-    padding: 12px 16px;
-    background: #6a0dad;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-#form-section button:hover {
-    background: #4b0082;
-}
-
-/* Tabela */
-#tabela-section table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-#tabela-section th, #tabela-section td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
-#tabela-section th { background: #f0e6fa; }
-.entrada { color: #1e8e3e; font-weight: 600; }
-.saida { color: #d93025; font-weight: 600; }
-button.excluir { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
-button.excluir:hover { background: #c0392b; }
-
-/* Gráfico */
-#grafico-section {
-    max-height: 400px;
-    margin-top: 24px;
-    padding: 20px;
-    background: #f9f5ff;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#graficoFinanceiro {
-    max-width: auto;
-    width: 100%;
-    height: auto;
-}
-
-/* Relatório e Relatório ANUAL */
-#relatorio-section { margin-top: 20px; }
-.relatorio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.card.kpi { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-.card.kpi h3 { color: #6a0dad; font-size: 1rem; margin-bottom: 8px; }
-.card.kpi p { font-size: 1.3rem; font-weight: 700; }
-
-#relatorio-anual-section {
-    margin-top: 30px;
-    padding: 20px;
-    background: #f9f5ff;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-}
-
-#tabela-anual {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-#tabela-anual th, #tabela-anual td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-#tabela-anual th {
-    background: #f0e6fa;
-}
-
-#graficoAnual {
-    max-width: 100%;
-    height: 340px;
-    margin-top: 20px;
-}
-
-.imprimir-botoes button,
-#btn-imprimir-anual {
-    margin-top: 14px;
-    padding: 10px 16px;
-    background: #6a0dad;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.imprimir-botoes button:hover,
-#btn-imprimir-anual:hover {
-    background: #4b0082;
-}
-
-#btn-imprimir-mensal,
-#btn-imprimir-anual {
-    margin-top: 14px;
-    padding: 10px 16px;
-    background: #6a0dad;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-#btn-imprimir-mensal:hover,
-#btn-imprimir-anual:hover {
-    background: #4b0082;
-}
-
-/* Fornecedores */
-#fornecedores-section { margin-top: 26px; }
-.fornecedor-form { display: flex; gap: 10px; margin-bottom: 12px; }
-.fornecedor-form input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.fornecedor-form button { padding: 10px 16px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
-.lista-fornecedores { list-style: none; }
-.lista-fornecedores li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; }
-.lista-fornecedores .remover { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
-.lista-fornecedores .remover:hover { background: #c0392b; }
-
-
-
-/* Footer */
-footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-size: 0.9em; }
-
-/* Media query para telas maiores, como desktops e tablets */
-@media (min-width: 769px) {
-  
 header { 
   background: linear-gradient(135deg, #f4ecf9, #9b59b6); 
   color: #fff; 
@@ -284,12 +26,13 @@ header {
   display: inline; 
 }
 
-    .logo-emei {
-        height: 100%;
-        width: auto;
-    }
+a,
+.btn {
+  transition: all 300ms ease;
+}
 
-    /* Navegação para desktop */
+/* DESKTOP NAV */
+
 nav,
 .nav-links {
   display: flex;
@@ -308,26 +51,227 @@ nav {
   padding: 10px;
 }
 
-    .nav-links-sobre:hover {
-      color:#fff;
-      text-decoration: underline;
-      text-underline-offset: 1rem;
-      text-decoration-color: var(--borda-clara);
+a {
+  text-decoration: none;
+  text-decoration-color: white;
+  color: #9b59b6;
 }
 
-    /* Ajuste da tabela para melhor visualização */
-    #tabela-section th, #tabela-section td {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
+a:hover {
+  color:#6a0dad;
+  text-decoration: underline;
+  text-underline-offset: 1rem;
+  text-decoration-color: var(--borda-clara);
 }
 
-/* Responsividade adicional para telas menores */
+.nav-links-sobre:hover {
+  color:#fff;
+  text-decoration: underline;
+  text-underline-offset: 1rem;
+  text-decoration-color: var(--borda-clara);
+}
+
+main { 
+  max-width: 1100px; 
+  margin: 20px auto; 
+  padding: 20px; 
+  background: #fff; 
+  border-radius: 14px; 
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08); 
+}
+
+.titulo-principal { 
+  color:#8821b7;
+}
+
+h1, h2 { 
+  color: #6a0dad; 
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  margin: 10px;
+}
+
+ul, li {
+  text-align: center;
+  list-style: disc;
+  list-style-position: inside;
+  padding: 5px;
+}
+
+.logo-emei {
+  height: 70px;
+  vertical-align: middle;
+  margin-right: 15px;
+}
+
+/* Toolbar */
+.toolbar { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.filtro-mes label { display: block; font-size: 0.9rem; color: #6a0dad; margin-bottom: 6px; }
+#filtro-mes { padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+.logout { padding: 10px 14px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
+.logout:hover { background: #4b0082; }
+
+/* Form Lançamento */
+/* Form Lançamento */
+#form-section form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr; /* 4 colunas proporcionais */
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: end; /* alinha rótulos e inputs */
+}
+
+#form-section label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6a0dad;
+}
+
+#form-section input,
+#form-section select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+}
+
+#form-section button {
+  grid-column: 1 / -1; /* botão ocupa toda a largura */
+  padding: 12px 16px;
+  background: #6a0dad;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#form-section button:hover {
+  background: #4b0082;
+}
+
+/* Tabela */
+#tabela-section table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+#tabela-section th, #tabela-section td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
+#tabela-section th { background: #f0e6fa; }
+.entrada { color: #1e8e3e; font-weight: 600; }
+.saida { color: #d93025; font-weight: 600; }
+button.excluir { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+button.excluir:hover { background: #c0392b; }
+
+/* Gráfico */
+#grafico-section {
+  max-height: 400px;
+  margin-top: 24px;
+  padding: 20px;
+  background: #f9f5ff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+}
+
+#graficoFinanceiro {
+  max-width: auto;  
+  width: 100%;      
+  height: auto;     
+}
+
+/* Relatório e Relatório ANUAL */
+#relatorio-section { margin-top: 20px; }
+.relatorio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.card.kpi { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.card.kpi h3 { color: #6a0dad; font-size: 1rem; margin-bottom: 8px; }
+.card.kpi p { font-size: 1.3rem; font-weight: 700; }
+
+#relatorio-anual-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f9f5ff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+#tabela-anual {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+#tabela-anual th, #tabela-anual td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+#tabela-anual th {
+  background: #f0e6fa;
+}
+
+#graficoAnual {
+  max-width: 100%;
+  height: 340px;
+  margin-top: 20px;
+}
+
+
+.imprimir-botoes button,
+#btn-imprimir-anual {
+  margin-top: 14px;
+  padding: 10px 16px;
+  background: #6a0dad;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.imprimir-botoes button:hover,
+#btn-imprimir-anual:hover {
+  background: #4b0082;
+}
+
+#btn-imprimir-mensal,
+#btn-imprimir-anual {
+  margin-top: 14px;
+  padding: 10px 16px;
+  background: #6a0dad;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#btn-imprimir-mensal:hover,
+#btn-imprimir-anual:hover {
+  background: #4b0082;
+}
+
+
+/* Fornecedores */
+#fornecedores-section { margin-top: 26px; }
+.fornecedor-form { display: flex; gap: 10px; margin-bottom: 12px; }
+.fornecedor-form input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+.fornecedor-form button { padding: 10px 16px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
+.lista-fornecedores { list-style: none; }
+.lista-fornecedores li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; }
+.lista-fornecedores .remover { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+.lista-fornecedores .remover:hover { background: #c0392b; }
+
+/* Login */
+#login-section { display: flex; justify-content: center; align-items: center; height: 80vh; }
+.login-card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+.login-card h2 { margin-bottom: 20px; color: #6a0dad; }
+.login-card input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
+.login-card button { width: 100%; padding: 12px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+.login-card button:hover { background: #4b0082; }
+
+/* Footer */
+footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-size: 0.9em; }
+
+/* Responsividade */
 @media (max-width: 900px) {
-    /* O formulário de lançamento permanecerá como no layout mobile, conforme a sua solicitação */
-    #form-section form {
-        grid-template-columns: 1fr;
-    }
-    .relatorio-grid { grid-template-columns: 1fr; }
+  #form-section form { grid-template-columns: 1fr 1fr; }
+  .relatorio-grid { grid-template-columns: 1fr; }
 }
-
