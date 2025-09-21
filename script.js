@@ -1,7 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 import { setLogLevel } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
 // Ativar logging para debug
@@ -13,46 +11,7 @@ setLogLevel('debug');
 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-const userIdDisplay = document.getElementById('user-id');
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-let userId = null;
-
-// ==========================
-// Autenticação
-// ==========================
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        userId = user.uid;
-        userIdDisplay.textContent = userId;
-        console.log("Usuário autenticado:", userId);
-        startApp();
-    } else {
-        userId = null;
-        userIdDisplay.textContent = 'N/A';
-        console.log("Nenhum usuário logado. Tentando autenticação...");
-        try {
-            if (typeof __initial_auth_token !== 'undefined') {
-                await signInWithCustomToken(auth, __initial_auth_token);
-                console.log("Autenticação com token personalizada bem-sucedida.");
-            } else {
-                await signInAnonymously(auth);
-                console.log("Autenticação anônima bem-sucedida.");
-            }
-        } catch (error) {
-            console.error("Erro na autenticação:", error);
-            showModal("Erro de autenticação: " + error.message, false);
-        }
-    }
-});
-
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-        console.log("Usuário desconectado.");
-    }).catch((error) => {
-        console.error("Erro ao fazer logout:", error);
-    });
-});
 
 // ==========================
 // Elementos e Utilidades
@@ -122,8 +81,8 @@ function hideModal() {
 // ==========================
 // Funções Firestore
 // ==========================
-const getTransacoesCollection = () => collection(db, `artifacts/${appId}/users/${userId}/transacoes`);
-const getFornecedoresCollection = () => collection(db, `artifacts/${appId}/users/${userId}/fornecedores`);
+const getTransacoesCollection = () => collection(db, `artifacts/${appId}/public/data/transacoes`);
+const getFornecedoresCollection = () => collection(db, `artifacts/${appId}/public/data/fornecedores`);
 
 async function salvarTransacao(transacao) {
     try {
@@ -402,6 +361,11 @@ function startApp() {
       }
     });
 }
+
+// Inicia o aplicativo diretamente, sem necessidade de autenticação.
+startApp();
+
+
 
 
 
