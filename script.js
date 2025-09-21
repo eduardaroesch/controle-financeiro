@@ -1,17 +1,21 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { setLogLevel } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-
-// Ativar logging para debug
-setLogLevel('debug');
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ==========================
 // Configuração do Firebase
 // ==========================
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+// *** ATENÇÃO: Substitua os valores abaixo com as chaves do seu projeto Firebase. ***
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
 // ==========================
 // Elementos e Utilidades
@@ -81,8 +85,8 @@ function hideModal() {
 // ==========================
 // Funções Firestore
 // ==========================
-const getTransacoesCollection = () => collection(db, `artifacts/${appId}/public/data/transacoes`);
-const getFornecedoresCollection = () => collection(db, `artifacts/${appId}/public/data/fornecedores`);
+const getTransacoesCollection = () => collection(db, `transacoes`);
+const getFornecedoresCollection = () => collection(db, `fornecedores`);
 
 async function salvarTransacao(transacao) {
     try {
@@ -139,7 +143,10 @@ function handlePrint(sectionId) {
         });
 
         // Esconder o botão de imprimir
-        document.querySelector(`#${sectionId} .imprimir-botoes`).style.display = 'none';
+        const imprimirBotoes = document.querySelector(`#${sectionId} .imprimir-botoes`);
+        if (imprimirBotoes) {
+            imprimirBotoes.style.display = 'none';
+        }
         
         // Adicionar um pequeno atraso para o navegador processar as mudanças de estilo
         setTimeout(() => {
@@ -154,7 +161,9 @@ function handlePrint(sectionId) {
             sectionsToHide.forEach((section, index) => {
                 section.style.display = originalDisplay[index];
             });
-            document.querySelector(`#${sectionId} .imprimir-botoes`).style.display = '';
+            if (imprimirBotoes) {
+                imprimirBotoes.style.display = '';
+            }
         });
     });
 }
@@ -178,7 +187,7 @@ function atualizarInterface() {
             <td>${t.fornecedor || '-'}</td>
             <td>${BRL.format(t.valor)}</td>
             <td class="${t.tipo}">${t.tipo}</td>
-            <td><button class="excluir" data-id="${t.id}">Excluir</button></td>
+            <td><button class="excluir" data-id="${t.id}" onclick="excluirTransacao('${t.id}')">Excluir</button></td>
         `;
         tabelaCorpo.appendChild(tr);
         if (t.tipo === 'entrada') totalEntradas += t.valor;
@@ -294,10 +303,21 @@ function atualizarGraficoAnual(dadosAnuais) {
 }
 
 function renderizarFornecedores() {
+    const fornecedorSelect = document.getElementById('fornecedor');
+    if (fornecedorSelect) {
+        fornecedorSelect.innerHTML = '<option value="">-- Selecione --</option>';
+        fornecedores.forEach(f => {
+            const option = document.createElement('option');
+            option.value = f.nome;
+            option.textContent = f.nome;
+            fornecedorSelect.appendChild(option);
+        });
+    }
+
     listaFornecedores.innerHTML = '';
     fornecedores.forEach(f => {
         const li = document.createElement('li');
-        li.innerHTML = `<span>${f.nome}</span><button class="remover" data-id="${f.id}">Remover</button>`;
+        li.innerHTML = `<span>${f.nome}</span><button class="remover" data-id="${f.id}" onclick="excluirFornecedor('${f.id}')">Remover</button>`;
         listaFornecedores.appendChild(li);
     });
 }
@@ -310,27 +330,24 @@ function startApp() {
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
 
-    let transacoesCarregadas = false;
-    let fornecedoresCarregados = false;
-
+    // Expondo funções globais para o HTML
+    window.excluirTransacao = excluirTransacao;
+    window.excluirFornecedor = excluirFornecedor;
+    
+    // Listeners do Firebase
     onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
         transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         atualizarInterface();
-        transacoesCarregadas = true;
-        if (fornecedoresCarregados) {
-            hideLoadingSpinner();
-        }
+        hideLoadingSpinner();
     });
 
     onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
         fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderizarFornecedores();
-        fornecedoresCarregados = true;
-        if (transacoesCarregadas) {
-            hideLoadingSpinner();
-        }
+        hideLoadingSpinner();
     });
 
+    // Listeners de eventos
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const transacao = {
@@ -349,24 +366,11 @@ function startApp() {
         salvarFornecedor(inputNovoFornecedor.value);
     });
 
-    tabelaCorpo.addEventListener('click', (e) => {
-        if (e.target.classList.contains('excluir')) {
-            excluirTransacao(e.target.dataset.id);
-        }
-    });
-
-    listaFornecedores.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remover')) {
-            excluirFornecedor(e.target.dataset.id);
-        }
-    });
-
     filtroMes.addEventListener('change', atualizarInterface);
 
     btnImprimirMensal.addEventListener('click', () => handlePrint('relatorio-section'));
     btnImprimirAnual.addEventListener('click', () => handlePrint('relatorio-anual-section'));
 
-    // Fechar modal ao clicar no overlay
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) {
         hideModal();
@@ -374,5 +378,4 @@ function startApp() {
     });
 }
 
-// Inicia o aplicativo diretamente, sem necessidade de autenticação.
-startApp();
+document.addEventListener('DOMContentLoaded', startApp);
