@@ -20,50 +20,41 @@ header {
   gap: 12px;
 }
 
-/* ======= Corrigido logo ======= */
+/* Ajuste do logo */
 .section_logo-container {
-  display: flex;
-  justify-content: center;
+  height: 70px;        /* altura máxima da logo */
+  display: flex;        /* centraliza corretamente */
   align-items: center;
-  height: auto; /* ajusta ao conteúdo */
+  justify-content: center;
 }
 
 .logo-emei {
-  height: 50px; /* altura fixa adequada */
-  width: auto;  /* mantém proporção */
-  margin: 0 auto;
+  height: 100%;         /* ocupa 100% do container */
+  width: auto;
 }
 
-/* Links e Botões */
-a,
-.btn {
-  transition: all 300ms ease;
-}
-
-/* ======= Corrigido Navegação ======= */
+/* Navegação desktop */
 nav {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem; /* espaço entre links */
-  padding: 12px 0;
+  justify-content: center;  /* centraliza horizontalmente */
+  gap: 2rem;                /* espaçamento entre links */
+  margin-top: 12px;
 }
 
 nav a {
-  font-size: 1.2rem;
-  color: #6a0dad;
   text-decoration: none;
+  color: #fff;              /* cor branca no fundo roxo */
   font-weight: 600;
-  transition: color 0.3s;
+  font-size: 1.1rem;
 }
 
 nav a:hover {
-  color: #4b0082;
+  color: #dcd3f0;
+  text-decoration: underline;
 }
 
 /* DESKTOP NAV */
 .nav-links-sobre {
-  /* mantido do original caso necessário */
   gap: 2rem;
   list-style: none;
   font-size: 2rem;
@@ -258,3 +249,4 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
   #form-section form { grid-template-columns: 1fr 1fr; }
   .relatorio-grid { grid-template-columns: 1fr; }
 }
+
