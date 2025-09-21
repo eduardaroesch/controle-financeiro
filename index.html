@@ -1,154 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <header class="no-print">
-    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
-    <div class="section_logo-container">
-        <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
-    </div>
+    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
+    <div class="section_logo-container">
+      <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+    </div>
 </header>
 
-<nav class="no-print">
-    <a class="nav-links" href="index.html">Início</a>
-    <a class="nav-links" href="projeto.html">Sobre o Projeto</a>
-</nav>
+  <nav class="no-print">
+    <a class="nav-links" href="index.html">Início</a>
+    <a class="nav-links" href="projeto.html">Sobre o Projeto</a>
+  </nav>
 
 
-<div class="container">
-    <main>
-        <section id="transacao-section" class="no-print">
-            <h2>Adicionar Lançamento</h2>
-            <form id="transacao-form">
-                <div class="form-group">
-                    <label for="descricao">Descrição</label>
-                    <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
-                </div>
-                <div class="form-group">
-                    <label for="valor">Valor (R$)</label>
-                    <input type="number" id="valor" step="0.01" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="tipo">Tipo</label>
-                    <select id="tipo" required>
-                        <option value="entrada">Entrada</option>
-                        <option value="saida">Saída</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="data">Data</label>
-                    <input type="date" id="data" required>
-                </div>
-                <div class="form-group">
-                    <label for="fornecedor">Fornecedor/Origem</label>
-                    <select id="fornecedor"></select>
-                </div>
-                <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
-            </form>
-        </section>
+  <div class="container">
+    <main>
+<section id="transacao-section" class="no-print">
+    <h2>Adicionar Lançamento</h2>
+    <form id="transacao-form">
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
+        </div>
+        <div class="form-group">
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="tipo">Tipo</label>
+            <select id="tipo" required>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
+        </div>
+        <div class="form-group">
+            <label for="fornecedor">Fornecedor/Origem</label>
+            <select id="fornecedor"></select>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
+    </form>
+</section>
 
-        <section id="relatorio-section">
-            <h2>Relatório do Mês</h2>
-            <div class="kpi-container">
-                <div class="card kpi kpi-entradas">
-                    <h3>Total Entradas</h3>
-                    <p id="kpi-entradas">R$ 0,00</p>
-                </div>
-                <div class="card kpi kpi-saidas">
-                    <h3>Total Saídas</h3>
-                    <p id="kpi-saidas">R$ 0,00</p>
-                </div>
-                <div class="card kpi kpi-saldo">
-                    <h3>Saldo do Mês</h3>
-                    <p id="kpi-saldo">R$ 0,00</p>
-                </div>
-            </div>
-            <div class="imprimir-botoes no-print">
-                <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
-            </div>
-            <div class="form-group no-print">
-                <label for="filtro-mes">Filtrar por Mês</label>
-                <input type="month" id="filtro-mes">
-            </div>
-            <div class="tabela-container">
-                <table id="tabela-transacoes">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Fornecedor</th>
-                            <th>Valor</th>
-                            <th>Tipo</th>
-                            <th class="no-print">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo"></tbody>
-                </table>
-            </div>
-            <canvas id="graficoFinanceiro" class="mt-4"></canvas>
-        </section>
+      <section id="relatorio-section">
+        <h2>Relatório do Mês</h2>
+        <div class="kpi-container">
+          <div class="card kpi kpi-entradas">
+            <h3>Total Entradas</h3>
+            <p id="kpi-entradas">R$ 0,00</p>
+          </div>
+          <div class="card kpi kpi-saidas">
+            <h3>Total Saídas</h3>
+            <p id="kpi-saidas">R$ 0,00</p>
+          </div>
+          <div class="card kpi kpi-saldo">
+            <h3>Saldo do Mês</h3>
+            <p id="kpi-saldo">R$ 0,00</p>
+          </div>
+        </div>
+        <div class="imprimir-botoes no-print">
+            <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
+        </div>
+        <div class="form-group no-print">
+          <label for="filtro-mes">Filtrar por Mês</label>
+          <input type="month" id="filtro-mes">
+        </div>
+        <div class="tabela-container">
+          <table id="tabela-transacoes">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Fornecedor</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+                <th class="no-print">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-corpo"></tbody>
+          </table>
+        </div>
+        <canvas id="graficoFinanceiro" class="mt-4"></canvas>
+      </section>
 
-        <section id="fornecedores-section" class="fornecedores-section no-print">
-            <h2>Gerenciar Fornecedores</h2>
-            <form id="fornecedor-form" class="fornecedor-form">
-                <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor" required>
-                <button type="submit" class="btn btn-primary">Adicionar</button>
-            </form>
-            <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
-        </section>
+      <section id="fornecedores-section" class="fornecedores-section no-print">
+        <h2>Gerenciar Fornecedores</h2>
+        <form id="fornecedor-form" class="fornecedor-form">
+          <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor" required>
+          <button type="submit" class="btn btn-primary">Adicionar</button>
+        </form>
+        <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
+      </section>
 
-        <section id="relatorio-anual-section">
-            <h2>Relatório Anual</h2>
-            <table id="tabela-anual">
-                <thead>
-                    <tr>
-                        <th>Mês</th>
-                        <th>Total Entradas</th>
-                        <th>Total Saídas</th>
-                        <th>Saldo</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela-anual-corpo"></tbody>
-                <tfoot>
-                    <tr>
-                        <th>Total Anual</th>
-                        <th id="total-entradas-anual">R$ 0,00</th>
-                        <th id="total-saidas-anual">R$ 0,00</th>
-                        <th id="saldo-anual">R$ 0,00</th>
-                    </tr>
-                </tfoot>
-            </table>
-            <canvas id="graficoAnual" class="mt-4"></canvas>
-            <div class="imprimir-botoes no-print">
-                <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
-            </div>
-        </section>
-    </main>
-</div>
+      <section id="relatorio-anual-section">
+        <h2>Relatório Anual</h2>
+        <table id="tabela-anual">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Total Entradas</th>
+              <th>Total Saídas</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-anual-corpo"></tbody>
+          <tfoot>
+            <tr>
+              <th>Total Anual</th>
+              <th id="total-entradas-anual">R$ 0,00</th>
+              <th id="total-saidas-anual">R$ 0,00</th>
+              <th id="saldo-anual">R$ 0,00</th>
+            </tr>
+          </tfoot>
+        </table>
+        <canvas id="graficoAnual" class="mt-4"></canvas>
+        <div class="imprimir-botoes no-print">
+            <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
+        </div>
+      </section>
+    </main>
+  </div>
 
-<div id="modal-overlay" class="modal-overlay no-print">
-    <div class="modal-content">
-        <h3 id="modal-titulo"></h3>
-        <p id="modal-mensagem"></p>
-        <div class="modal-buttons">
-            <button id="modal-btn-confirmar" class="btn btn-primary">Confirmar</button>
-            <button id="modal-btn-cancelar" class="btn">Cancelar</button>
-        </div>
-    </div>
-</div>
+  <div id="modal-overlay" class="modal-overlay no-print">
+    <div class="modal-content">
+      <h3 id="modal-titulo"></h3>
+      <p id="modal-mensagem"></p>
+      <div class="modal-buttons">
+        <button id="modal-btn-confirmar" class="btn btn-primary">Confirmar</button>
+        <button id="modal-btn-cancelar" class="btn">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
-<div id="loading-spinner" class="no-print">
-    <div class="spinner"></div>
-</div>
+  <div id="loading-spinner" class="no-print">
+    <div class="spinner"></div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module" src="./script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
