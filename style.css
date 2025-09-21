@@ -310,20 +310,13 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
         padding: 12px;
         font-size: 0.9rem;
     }
-
-    /* Ajuste do formulário para desktop */
-    #form-section form {
-        grid-template-columns: repeat(5, 1fr); /* 5 colunas para melhor organização */
-        gap: 20px;
-    }
-
-    #form-section button {
-        grid-column: span 5;
-    }
 }
 
 /* Responsividade adicional para telas menores */
 @media (max-width: 900px) {
-    #form-section form { grid-template-columns: 1fr 1fr; }
+    /* O formulário de lançamento permanecerá como no layout mobile, conforme a sua solicitação */
+    #form-section form {
+        grid-template-columns: 1fr;
+    }
     .relatorio-grid { grid-template-columns: 1fr; }
 }
