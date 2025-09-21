@@ -45,6 +45,11 @@ const kpiEntradas = document.getElementById('kpi-entradas');
 const kpiSaidas = document.getElementById('kpi-saidas');
 const kpiSaldo = document.getElementById('kpi-saldo');
 
+const tabelaAnualCorpo = document.getElementById('tabela-anual').querySelector('tbody');
+const totalEntradasAnual = document.getElementById('total-entradas-anual');
+const totalSaidasAnual = document.getElementById('total-saidas-anual');
+const saldoAnual = document.getElementById('saldo-anual');
+
 const fornecedorForm = document.getElementById('fornecedor-form');
 const novoFornecedorInput = document.getElementById('novo-fornecedor');
 const listaFornecedoresUL = document.getElementById('lista-fornecedores');
@@ -72,7 +77,7 @@ async function carregarDados() {
 
   renderFornecedores();
   atualizarInterface();
-  // atualizarRelatorioAnual(); // opcional
+  atualizarRelatorioAnual();
 }
 
 async function salvarTransacao(dados) {
@@ -111,7 +116,7 @@ async function removerFornecedor(index) {
 }
 
 // ==========================
-// Gráfico
+// Gráfico Mensal
 // ==========================
 const ctx = document.getElementById('graficoFinanceiro').getContext('2d');
 let grafico = new Chart(ctx, {
@@ -122,6 +127,30 @@ let grafico = new Chart(ctx, {
   },
   options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
 });
+
+// ==========================
+// Gráfico Anual
+// ==========================
+const ctxAnual = document.getElementById('graficoAnual').getContext('2d');
+const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+let graficoAnual = new Chart(ctxAnual, {
+  type: 'bar',
+  data: {
+    labels: meses,
+    datasets: [
+      { label: 'Entradas', data: [], backgroundColor: '#6a0dad' },
+      { label: 'Saídas', data: [], backgroundColor: '#e74c3c' }
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { stacked: true },
+      y: { stacked: true }
+    }
+  }
+});
+
 
 // ==========================
 // Inicialização Inputs
@@ -201,7 +230,7 @@ form.addEventListener('submit', e=>{
 });
 
 // ==========================
-// Atualizar Interface
+// Atualizar Interface Mensal
 // ==========================
 function atualizarInterface(){
   const alvoMes = filtroMes.value;
@@ -236,6 +265,63 @@ function atualizarInterface(){
 }
 
 // ==========================
+// Atualizar Relatório Anual
+// ==========================
+function atualizarRelatorioAnual() {
+  const anoAtual = new Date().getFullYear().toString();
+  const dadosAnuais = {};
+
+  transacoes.forEach(t => {
+    const [ano, mes] = t.data.split('-');
+    if (ano === anoAtual) {
+      if (!dadosAnuais[mes]) {
+        dadosAnuais[mes] = { entradas: 0, saidas: 0 };
+      }
+      if (t.tipo === 'entrada') {
+        dadosAnuais[mes].entradas += t.valor;
+      } else {
+        dadosAnuais[mes].saidas += t.valor;
+      }
+    }
+  });
+
+  tabelaAnualCorpo.innerHTML = '';
+  let totalEntradasGeral = 0;
+  let totalSaidasGeral = 0;
+  const dadosGraficoEntradas = [];
+  const dadosGraficoSaidas = [];
+
+  for (let i = 1; i <= 12; i++) {
+    const mesFormatado = i.toString().padStart(2, '0');
+    const dadosMes = dadosAnuais[mesFormatado] || { entradas: 0, saidas: 0 };
+    const saldoMes = dadosMes.entradas - dadosMes.saidas;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${meses[i - 1]}</td>
+      <td>${BRL.format(dadosMes.entradas)}</td>
+      <td>${BRL.format(dadosMes.saidas)}</td>
+      <td>${BRL.format(saldoMes)}</td>
+    `;
+    tabelaAnualCorpo.appendChild(tr);
+
+    totalEntradasGeral += dadosMes.entradas;
+    totalSaidasGeral += dadosMes.saidas;
+
+    dadosGraficoEntradas.push(dadosMes.entradas);
+    dadosGraficoSaidas.push(dadosMes.saidas);
+  }
+
+  totalEntradasAnual.textContent = BRL.format(totalEntradasGeral);
+  totalSaidasAnual.textContent = BRL.format(totalSaidasGeral);
+  saldoAnual.textContent = BRL.format(totalEntradasGeral - totalSaidasGeral);
+
+  graficoAnual.data.datasets[0].data = dadosGraficoEntradas;
+  graficoAnual.data.datasets[1].data = dadosGraficoSaidas;
+  graficoAnual.update();
+}
+
+// ==========================
 // Mensagem de confirmação
 // ==========================
 function mostrarMensagem(msg){
@@ -258,3 +344,4 @@ if(btnLogout) btnLogout.addEventListener('click', () => {
     app.style.display = 'none';
     loginSection.style.display = 'flex';
 });
+
