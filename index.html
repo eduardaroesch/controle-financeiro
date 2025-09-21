@@ -1,149 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle Financeiro</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro</title>
 
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
-    <div class="section_logo-container">
-      <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
-    </div>
-  </header>
+  <header>
+    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
+    <div class="section_logo-container">
+      <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+    </div>
+  </header>
 
-  <nav>
-    <a class="nav-links" href="index.html">Início</a>
-    <a class="nav-links" href="projeto.html">Sobre o Projeto</a>
-  </nav>
+  <nav>
+    <a class="nav-links" href="index.html">Início</a>
+    <a class="nav-links" href="projeto.html">Sobre o Projeto</a>
+  </nav>
 
-  <main id="app" style="display:block;">
-    <div class="toolbar">
-      <div class="filtro-mes">
-        <label for="filtro-mes">Mês de referência</label>
-        <input type="month" id="filtro-mes">
-      </div>
-      <button id="logout" class="logout">Sair</button>
-    </div>
+  <main id="app">
+    <div class="toolbar">
+      <div class="filtro-mes">
+        <label for="filtro-mes">Mês de referência</label>
+        <input type="month" id="filtro-mes">
+      </div>
+      <button id="logout" class="logout">Sair</button>
+    </div>
 
-    <section id="form-section">
-      <h2>Adicionar Lançamento</h2>
-      <form id="transaction-form">
-        <label for="descricao">Descrição</label>
-        <input type="text" id="descricao" placeholder="Descrição" required>
+    <section id="form-section">
+      <h2>Adicionar Lançamento</h2>
+      <form id="transaction-form">
+        <label for="descricao">Descrição</label>
+        <input type="text" id="descricao" placeholder="Descrição" required>
 
-        <label for="valor">Valor</label>
-        <input type="number" id="valor" placeholder="Valor (ex: 120.50)" step="0.01" required>
+        <label for="valor">Valor</label>
+        <input type="number" id="valor" placeholder="Valor (ex: 120.50)" step="0.01" required>
 
-        <label for="tipo">Tipo</label>
-        <select id="tipo">
-          <option value="entrada">Entrada</option>
-          <option value="saida">Saída</option>
-        </select>
+        <label for="tipo">Tipo</label>
+        <select id="tipo">
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
 
-        <label for="data">Data</label>
-        <input type="date" id="data" required>
+        <label for="data">Data</label>
+        <input type="date" id="data" required>
 
-        <div class="fornecedor-wrap">
-          <label for="fornecedor">Fornecedor/Pessoa</label>
-          <select id="fornecedor" required>
-            <option value="" disabled selected>Selecione um fornecedor</option>
-          </select>
-          <a href="#fornecedores-section" class="gerenciar-link">gerenciar fornecedores</a>
-        </div>
+        <div class="fornecedor-wrap">
+          <label for="fornecedor">Fornecedor/Pessoa</label>
+          <select id="fornecedor" required>
+            <option value="" disabled selected>Selecione um fornecedor</option>
+          </select>
+          <a href="#fornecedores-section" class="gerenciar-link">gerenciar fornecedores</a>
+        </div>
 
-        <p id="mensagem-erro" class="erro" style="color: red; display: none;"></p>
-        <button type="submit">Adicionar</button>
-      </form>
-    </section>
+        <p id="mensagem-erro" class="erro" style="color: red; display: none;"></p>
+        <button type="submit">Adicionar</button>
+      </form>
+    </section>
 
-    <section id="saldo-section">
-      <h2>Saldo do mês: <span id="saldo">R$ 0,00</span></h2>
-    </section>
+    <section id="saldo-section">
+      <h2>Saldo do mês: <span id="saldo">R$ 0,00</span></h2>
+    </section>
 
-    <section id="tabela-section">
-      <h2>Lançamentos do mês</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Fornecedor/Pessoa</th>
-            <th>Valor</th>
-            <th>Tipo</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-corpo"></tbody>
-      </table>
-    </section>
+    <section id="tabela-section">
+      <h2>Lançamentos do mês</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Fornecedor/Pessoa</th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-corpo"></tbody>
+      </table>
+    </section>
 
-    <section id="grafico-section">
-      <h2>Resumo Gráfico</h2>
-      <canvas id="graficoFinanceiro"></canvas>
-    </section>
+    <section id="grafico-section">
+      <h2>Resumo Gráfico</h2>
+      <canvas id="graficoFinanceiro"></canvas>
+    </section>
 
-    <section id="relatorio-section">
-      <h2>Relatório Mensal</h2>
-      <div class="relatorio-grid">
-        <div class="card kpi">
-          <h3>Total de Entradas</h3>
-          <p id="kpi-entradas">R$ 0,00</p>
-        </div>
-        <div class="card kpi">
-          <h3>Total de Saídas</h3>
-          <p id="kpi-saidas">R$ 0,00</p>
-        </div>
-        <div class="card kpi">
-          <h3>Saldo do Mês</h3>
-          <p id="kpi-saldo">R$ 0,00</p>
-        </div>
-      </div>
-      <button id="btn-imprimir-mensal">Imprimir Relatório Mensal</button>
-    </section>
+    <section id="relatorio-section">
+      <h2>Relatório Mensal</h2>
+      <div class="relatorio-grid">
+        <div class="card kpi">
+          <h3>Total de Entradas</h3>
+          <p id="kpi-entradas">R$ 0,00</p>
+        </div>
+        <div class="card kpi">
+          <h3>Total de Saídas</h3>
+          <p id="kpi-saidas">R$ 0,00</p>
+        </div>
+        <div class="card kpi">
+          <h3>Saldo do Mês</h3>
+          <p id="kpi-saldo">R$ 0,00</p>
+        </div>
+      </div>
+      <button id="btn-imprimir-mensal">Imprimir Relatório Mensal</button>
+    </section>
 
-    <section id="relatorio-anual-section">
-      <h2>Relatório Anual</h2>
-      <table id="tabela-anual">
-        <thead>
-          <tr>
-            <th>Mês</th>
-            <th>Total Entradas</th>
-            <th>Total Saídas</th>
-            <th>Saldo</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-          <tr>
-            <th>Total Anual</th>
-            <th id="total-entradas-anual">R$ 0,00</th>
-            <th id="total-saidas-anual">R$ 0,00</th>
-            <th id="saldo-anual">R$ 0,00</th>
-          </tr>
-        </tfoot>
-      </table>
-      <canvas id="graficoAnual"></canvas>
-      <button id="btn-imprimir-anual">Imprimir Relatório Anual</button>
-    </section>
+    <section id="relatorio-anual-section">
+      <h2>Relatório Anual</h2>
+      <table id="tabela-anual">
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>Total Entradas</th>
+            <th>Total Saídas</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <th>Total Anual</th>
+            <th id="total-entradas-anual">R$ 0,00</th>
+            <th id="total-saidas-anual">R$ 0,00</th>
+            <th id="saldo-anual">R$ 0,00</th>
+          </tr>
+        </tfoot>
+      </table>
+      <canvas id="graficoAnual"></canvas>
+      <button id="btn-imprimir-anual">Imprimir Relatório Anual</button>
+    </section>
 
-    <section id="fornecedores-section">
-      <h2>Lista de Fornecedores</h2>
-      <form id="fornecedor-form" class="fornecedor-form">
-        <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor">
-        <button type="submit">Adicionar</button>
-      </form>
-      <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
-    </section>
-  </main>
+    <section id="fornecedores-section">
+      <h2>Lista de Fornecedores</h2>
+      <form id="fornecedor-form" class="fornecedor-form">
+        <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor">
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
+    </section>
+  </main>
 
-  <footer>
-    <p>Desenvolvido para a disciplina • 2025</p>
-  </footer>
-  <script type="module" src="script.js"></script>
+  <footer>
+    <p>Desenvolvido para a disciplina • 2025</p>
+  </footer>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
+
