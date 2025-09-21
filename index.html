@@ -4,21 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-    window.firebaseApp = initializeApp({
-        apiKey: "AIzaSyA8Yw9wnKcgSK-svf37hnfzXZyDhtbj3Ro",
-        authDomain: "controle-financeiro-emei.firebaseapp.com",
-        projectId: "controle-financeiro-emei",
-        storageBucket: "controle-financeiro-emei.firebasestorage.app",
-        messagingSenderId: "520133382523",
-        appId: "1:520133382523:web:952d313fd881bad49cedde"
-    });
-    window.db = getFirestore(window.firebaseApp);
-    window.firebaseFuncs = { initializeApp, getFirestore, collection, getDocs, addDoc, deleteDoc, doc };
-</script>
 
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -162,3 +147,4 @@
   <script type="module" src="script.js"></script>
 </body>
 </html>
+
