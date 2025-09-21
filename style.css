@@ -258,7 +258,7 @@ button.excluir:hover { background: #c0392b; }
 /* Estilos de impressão */
 @media print {
     body {
-        background: #fff; /* Fundo branco para impressão */
+        background: #fff;
         color: #000;
         margin: 0;
         padding: 0;
@@ -268,19 +268,13 @@ button.excluir:hover { background: #c0392b; }
         display: none !important;
     }
 
-    header, main, section {
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
+    /* Oculta apenas a seção de relatório anual ao imprimir o relatório mensal */
+    #relatorio-anual-section {
+        display: none;
     }
 
-    /* Outros ajustes específicos para a impressão */
-    #tabela-transacoes, #tabela-anual {
-        width: 100%;
-    }
-
-    /* Ocultar elementos desnecessários na impressão */
-    .imprimir-botoes, .filtro-mes, .form-group, #transacao-section {
+    /* Oculta apenas a seção de relatório mensal ao imprimir o relatório anual */
+    #relatorio-section {
         display: none;
     }
 }
@@ -321,3 +315,4 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
         grid-column: auto;
     }
 }
+
