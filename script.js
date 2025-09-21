@@ -62,21 +62,17 @@ function showLoadingSpinner() {
 function hideLoadingSpinner() {
     loadingSpinner.classList.remove('active');
 }
-
+//alert ao invés de rodapé
 function showModal(message, isConfirm = false, onConfirm = null) {
-    modalMensagem.textContent = message;
-    modalBtnConfirmar.style.display = isConfirm ? 'inline-block' : 'none';
-    modalBtnCancelar.style.display = isConfirm ? 'inline-block' : 'none';
-    modalOverlay.classList.add('active');
-
-    modalBtnConfirmar.onclick = () => {
-        if (onConfirm) onConfirm();
-        hideModal();
-    };
-    modalBtnCancelar.onclick = () => {
-        hideModal();
-    };
+    if (isConfirm) {
+        if (confirm(message)) {
+            if (onConfirm) onConfirm();
+        }
+    } else {
+        alert(message);
+    }
 }
+
 
 function hideModal() {
     modalOverlay.classList.remove('active');
@@ -379,3 +375,4 @@ function startApp() {
 }
 
 document.addEventListener('DOMContentLoaded', startApp);
+
