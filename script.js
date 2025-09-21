@@ -6,12 +6,12 @@ import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query } f
 // ==========================
 // *** ATENÇÃO: Substitua os valores abaixo com as chaves do seu projeto Firebase. ***
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyA8Yw9wnKcgSK-svf37hnfzXZyDhtbj3Ro",
+  authDomain: "controle-financeiro-emei.firebaseapp.com",
+  projectId: "controle-financeiro-emei",
+  storageBucket: "controle-financeiro-emei.firebasestorage.app",
+  messagingSenderId: "520133382523",
+  appId: "1:520133382523:web:952d313fd881bad49cedde"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -379,3 +379,4 @@ function startApp() {
 }
 
 document.addEventListener('DOMContentLoaded', startApp);
+
