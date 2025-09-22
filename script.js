@@ -1,10 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// ==========================
-// Configuração do Firebase
-// ==========================
-// *** ATENÇÃO: Substitua os valores abaixo com as chaves do seu projeto Firebase. ***
+// ===================================
+// Configuração e Inicialização do Firebase
+// ===================================
+
 const firebaseConfig = {
   apiKey: "AIzaSyA8Yw9wnKcgSK-svf37hnfzXZyDhtbj3Ro",
   authDomain: "controle-financeiro-emei.firebaseapp.com",
@@ -17,13 +17,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ==========================
-// Elementos e Utilidades
-// ==========================
-const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const hojeISO = () => new Date().toISOString().slice(0, 10);
-const yyyymm = (isoDate) => (isoDate || '').slice(0, 7);
-
+// ===================================
+// Referências a Elementos HTML
+// ===================================
+// Esta seção centraliza a seleção de todos os elementos HTML usados no script,
+// facilitando a identificação e manutenção.
 const formularioTransacao = document.getElementById('formulario-transacao');
 const inputData = document.getElementById('data');
 const corpoTabela = document.getElementById('corpo-tabela');
@@ -48,14 +46,21 @@ const btnModalConfirmar = document.getElementById('btn-modal-confirmar');
 const btnModalCancelar = document.getElementById('btn-modal-cancelar');
 const carregandoSpinner = document.getElementById('carregando-spinner');
 
+// ===================================
+// Variáveis de Estado da Aplicação
+// ===================================
 let transacoes = [];
 let fornecedores = [];
 let graficoMensal;
 let graficoAnual;
 
-// ==========================
-// Funções de UI
-// ==========================
+// ===================================
+// Funções Utilitárias e de UI
+// ===================================
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const hojeISO = () => new Date().toISOString().slice(0, 10);
+const yyyymm = (isoDate) => (isoDate || '').slice(0, 7);
+
 function mostrarCarregando() {
     carregandoSpinner.classList.add('active');
 }
@@ -64,90 +69,114 @@ function esconderCarregando() {
     carregandoSpinner.classList.remove('active');
 }
 
-function mostrarModal(mensagem, isConfirm = false, onConfirm = null) {
-    if (isConfirm) {
+// A função original foi simplificada para `mostrarAlertaOuConfirmar`
+// já que a modal completa não estava sendo utilizada.
+function mostrarAlertaOuConfirmar(mensagem, ehConfirmacao = false, callbackConfirmacao = null) {
+    if (ehConfirmacao) {
         if (confirm(mensagem)) {
-            if (onConfirm) onConfirm();
+            if (callbackConfirmacao) callbackConfirmacao();
         }
     } else {
         alert(mensagem);
     }
 }
 
-function esconderModal() {
-    camadaModal.classList.remove('active');
-}
-
-// ==========================
-// Funções Firestore
-// ==========================
+// ===================================
+// Funções de Interação com o Firestore
+// ===================================
+// Funções para obter as referências às coleções de dados
 const getTransacoesCollection = () => collection(db, 'transacoes');
 const getFornecedoresCollection = () => collection(db, 'fornecedores');
 
+/**
+ * Salva uma nova transação no Firestore.
+ * @param {object} transacao - Objeto contendo os dados da transação.
+ */
 async function salvarTransacao(transacao) {
     try {
         await addDoc(getTransacoesCollection(), transacao);
-        mostrarModal("Lançamento salvo com sucesso!");
+        mostrarAlertaOuConfirmar("Lançamento salvo com sucesso!");
     } catch (e) {
-        mostrarModal("Erro ao salvar lançamento: " + e.message, false);
+        mostrarAlertaOuConfirmar("Erro ao salvar lançamento: " + e.message);
     }
 }
 
+/**
+ * Exclui uma transação específica do Firestore.
+ * Pede confirmação antes de executar a exclusão.
+ * @param {string} id - O ID do documento da transação a ser excluída.
+ */
 async function excluirTransacao(id) {
-    mostrarModal("Tem certeza que deseja excluir esta transação?", true, async () => {
+    mostrarAlertaOuConfirmar("Tem certeza que deseja excluir esta transação?", true, async () => {
         try {
             await deleteDoc(doc(getTransacoesCollection(), id));
-            mostrarModal("Lançamento excluído com sucesso!");
+            mostrarAlertaOuConfirmar("Lançamento excluído com sucesso!");
         } catch (e) {
-            mostrarModal("Erro ao excluir lançamento: " + e.message, false);
+            mostrarAlertaOuConfirmar("Erro ao excluir lançamento: " + e.message);
         }
     });
 }
 
+/**
+ * Salva um novo fornecedor no Firestore.
+ * @param {string} nome - O nome do fornecedor.
+ */
 async function salvarFornecedor(nome) {
     try {
         await addDoc(getFornecedoresCollection(), { nome });
         inputNovoFornecedor.value = '';
     } catch (e) {
-        mostrarModal("Erro ao salvar fornecedor: " + e.message, false);
+        mostrarAlertaOuConfirmar("Erro ao salvar fornecedor: " + e.message);
     }
 }
 
+/**
+ * Exclui um fornecedor específico do Firestore.
+ * Pede confirmação antes de executar a exclusão.
+ * @param {string} id - O ID do documento do fornecedor a ser excluído.
+ */
 async function excluirFornecedor(id) {
-    mostrarModal("Tem certeza que deseja excluir este fornecedor?", true, async () => {
+    mostrarAlertaOuConfirmar("Tem certeza que deseja excluir este fornecedor?", true, async () => {
         try {
             await deleteDoc(doc(getFornecedoresCollection(), id));
-            mostrarModal("Fornecedor excluído com sucesso!");
+            mostrarAlertaOuConfirmar("Fornecedor excluído com sucesso!");
         } catch (e) {
-            mostrarModal("Erro ao excluir fornecedor: " + e.message, false);
+            mostrarAlertaOuConfirmar("Erro ao excluir fornecedor: " + e.message);
         }
     });
 }
 
-// ==========================
-// Funções de Impressão
-// ==========================
+// ===================================
+// Funções de Impressão e UI
+// ===================================
+
+/**
+ * Lida com a funcionalidade de impressão da página, ocultando seções desnecessárias.
+ * @param {string} secaoId - O ID da seção que deve ser impressa.
+ */
 function lidarComImpressao(secaoId) {
-    mostrarModal("Deseja imprimir este relatório?", true, () => {
-        const secoesParaOcultar = document.querySelectorAll('main > section:not(#' + secaoId + ')');
+    mostrarAlertaOuConfirmar("Deseja imprimir este relatório?", true, () => {
+        const secoesParaOcultar = document.querySelectorAll(`main > section:not(#${secaoId})`);
         const displayOriginal = [];
         
+        // Esconde as seções que não serão impressas para manter o layout limpo
         secoesParaOcultar.forEach(secao => {
             displayOriginal.push(secao.style.display);
             secao.style.display = 'none';
         });
 
+        // Oculta o botão de imprimir para que ele não apareça no documento impresso
         const botoesImprimir = document.querySelector(`#${secaoId} .container-botoes-imprimir`);
         if (botoesImprimir) {
             botoesImprimir.style.display = 'none';
         }
         
+        // Pequeno atraso para garantir que o navegador processe as mudanças de estilo antes de imprimir
         setTimeout(() => {
             window.print();
         }, 100);
 
-        esconderModal();
-
+        // Restaura o layout após a impressão
         window.addEventListener('afterprint', () => {
             secoesParaOcultar.forEach((secao, indice) => {
                 secao.style.display = displayOriginal[indice];
@@ -159,16 +188,18 @@ function lidarComImpressao(secaoId) {
     });
 }
 
-// ==========================
-// Funções de Renderização
-// ==========================
+/**
+ * Atualiza toda a interface do usuário com os dados mais recentes.
+ */
 function atualizarInterface() {
     const mesAlvo = filtroMes.value;
     const lista = transacoes.filter(t => yyyymm(t.data) === mesAlvo);
 
+    // Limpa o corpo da tabela antes de preencher
     corpoTabela.innerHTML = '';
     let totalEntradas = 0, totalSaidas = 0;
 
+    // Ordena as transações por data (do mais antigo para o mais recente)
     lista.sort((a, b) => a.data.localeCompare(b.data));
     lista.forEach(t => {
         const tr = document.createElement('tr');
@@ -195,6 +226,10 @@ function atualizarInterface() {
     renderizarFornecedores();
 }
 
+/**
+ * Atualiza o gráfico mensal com base nas transações filtradas.
+ * @param {Array} lista - Lista de transações do mês selecionado.
+ */
 function atualizarGraficoMensal(lista) {
     if (graficoMensal) graficoMensal.destroy();
     const entradas = lista.filter(t => t.tipo === 'entrada').reduce((sum, t) => sum + t.valor, 0);
@@ -220,6 +255,9 @@ function atualizarGraficoMensal(lista) {
     });
 }
 
+/**
+ * Renderiza a tabela de resumo anual.
+ */
 function renderizarTabelaAnual() {
     const dadosAnuais = {};
     let totalEntradasAnualCalc = 0, totalSaidasAnualCalc = 0;
@@ -260,6 +298,10 @@ function renderizarTabelaAnual() {
     atualizarGraficoAnual(dadosAnuais);
 }
 
+/**
+ * Atualiza o gráfico anual com base nos dados anuais.
+ * @param {object} dadosAnuais - Objeto contendo os totais de entradas e saídas por mês.
+ */
 function atualizarGraficoAnual(dadosAnuais) {
     if (graficoAnual) graficoAnual.destroy();
     const meses = Object.keys(dadosAnuais).sort();
@@ -293,6 +335,9 @@ function atualizarGraficoAnual(dadosAnuais) {
     });
 }
 
+/**
+ * Renderiza a lista de fornecedores e atualiza o seletor.
+ */
 function renderizarFornecedores() {
     const seletorFornecedor = document.getElementById('fornecedor');
     if (seletorFornecedor) {
@@ -313,29 +358,38 @@ function renderizarFornecedores() {
     });
 }
 
-// ==========================
-// Listeners e Inicialização
-// ==========================
+// ===================================
+// Listeners de Eventos e Inicialização da Aplicação
+// ===================================
+
+/**
+ * Inicia a aplicação, configurando listeners e buscando dados iniciais.
+ */
 function iniciarApp() {
     mostrarCarregando();
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
 
+    // Expondo funções para o escopo global (usado no HTML para os eventos onclick)
     window.excluirTransacao = excluirTransacao;
     window.excluirFornecedor = excluirFornecedor;
     
+    // Configura os listeners em tempo real para as coleções do Firestore
+    // Sempre que os dados de 'transacoes' mudam, a interface é atualizada.
     onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
         transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         atualizarInterface();
         esconderCarregando();
     });
 
+    // Sempre que os dados de 'fornecedores' mudam, a lista é atualizada.
     onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
         fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderizarFornecedores();
         esconderCarregando();
     });
 
+    // Configura os outros listeners de eventos (formulários, botões, etc.)
     formularioTransacao.addEventListener('submit', (e) => {
         e.preventDefault();
         const transacao = {
@@ -361,9 +415,12 @@ function iniciarApp() {
 
     camadaModal.addEventListener('click', (e) => {
       if (e.target === camadaModal) {
-        esconderModal();
+        // A modal completa não é utilizada, por isso esta função permanece
+        // sem um corpo funcional no código principal.
+        // esconderModal(); 
       }
     });
 }
 
+// Inicia a aplicação quando o DOM estiver completamente carregado.
 document.addEventListener('DOMContentLoaded', iniciarApp);
