@@ -1,21 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ===================================
 // Configuração e Inicialização do Firebase
 // ===================================
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD3Dt4KqqZaK6h7WpzoYtUw8CQfsSKUMlk",
-  authDomain: "controle-financeiro-emei.firebaseapp.com",
-  projectId: "controle-financeiro-emei",
-  storageBucket: "controle-financeiro-emei.firebasestorage.app",
-  messagingSenderId: "520133382523",
-  appId: "1:520133382523:web:952d313fd881bad49cedde"
-};
+import { app, db } from './firebase-config.js';
+import { collection, onSnapshot, doc, addDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // ===================================
 // Referências a Elementos HTML
@@ -397,3 +387,4 @@ function iniciarApp() {
 }
 // Inicia a aplicação quando o DOM estiver completamente carregado.
 document.addEventListener('DOMContentLoaded', iniciarApp);
+
