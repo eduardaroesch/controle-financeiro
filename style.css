@@ -1,5 +1,10 @@
 /* Reset básico */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; 
+}
 
 body { 
   background: #f4f0fa; 
@@ -19,7 +24,7 @@ header {
   gap: 12px;
 }
 
-.section_logo-container {
+.container-logo-secao {
   height: 50px;
   width: auto;
   margin: auto 0;
@@ -31,10 +36,9 @@ a,
   transition: all 300ms ease;
 }
 
-/* DESKTOP NAV */
-
+/* NAVEGAÇÃO DESKTOP */
 nav,
-.nav-links {
+.links-navegacao {
   display: flex;
 }
 
@@ -44,7 +48,7 @@ nav {
   height: 17vh;
 }
 
-.nav-links, .nav-links-sobre {
+.links-navegacao, .links-navegacao-sobre {
   gap: 2rem;
   list-style: none;
   font-size: 2rem;
@@ -64,7 +68,7 @@ a:hover {
   text-decoration-color: var(--borda-clara);
 }
 
-.nav-links-sobre:hover {
+.links-navegacao-sobre:hover {
   color:#fff;
   text-decoration: underline;
   text-underline-offset: 1rem;
@@ -107,15 +111,39 @@ ul, li {
   margin-right: 15px;
 }
 
-/* Toolbar */
-.toolbar { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-.filtro-mes label { display: block; font-size: 0.9rem; color: #6a0dad; margin-bottom: 6px; }
-#filtro-mes { padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.logout { padding: 10px 14px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
-.logout:hover { background: #4b0082; }
+/* Barra de Ferramentas */
+.toolbar { 
+  display: flex; 
+  align-items: end; 
+  justify-content: space-between; 
+  gap: 16px; 
+  margin-bottom: 16px; 
+} 
+.filtro-mes label { 
+  display: block; 
+  font-size: 0.9rem; 
+  color: #6a0dad; 
+  margin-bottom: 6px; 
+} 
+#filtro-mes { 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+} 
+.logout { 
+  padding: 10px 14px; 
+  background: #6a0dad; 
+  color: #fff; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+} 
+.logout:hover { 
+  background: #4b0082; 
+}
 
-/* Form Lançamento */
-#transacao-section form {
+/* Formulário de Lançamento */ 
+#secao-transacao form {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
@@ -123,27 +151,27 @@ ul, li {
     align-items: end;
 }
 
-#transacao-section .form-group {
+#secao-transacao .grupo-formulario {
     display: flex;
     flex-direction: column;
 }
 
-#transacao-section label {
+#secao-transacao label {
     font-size: 0.9rem;
     font-weight: 600;
     color: #6a0dad;
-    margin-bottom: 6px; /* Adicionado para um melhor espaçamento */
+    margin-bottom: 6px; 
 }
 
-#transacao-section input,
-#transacao-section select {
+#secao-transacao input,
+#secao-transacao select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
     width: 100%;
 }
 
-#transacao-section button {
+#secao-transacao button {
     grid-column: 1 / -1;
     padding: 12px 16px;
     background: #6a0dad;
@@ -154,155 +182,255 @@ ul, li {
     transition: 0.3s;
 }
 
-#transacao-section button:hover {
+#secao-transacao button:hover {
     background: #4b0082;
 }
 
 /* Tabela */
-#tabela-section table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-#tabela-section th, #tabela-section td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
-#tabela-section th { background: #f0e6fa; }
-.entrada { color: #1e8e3e; font-weight: 600; }
-.saida { color: #d93025; font-weight: 600; }
-button.excluir { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
-button.excluir:hover { background: #c0392b; }
+#secao-tabela table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 10px; 
+} 
+#secao-tabela th, #secao-tabela td { 
+  padding: 12px; 
+  text-align: center; 
+  border-bottom: 1px solid #eee; 
+} 
+#secao-tabela th { 
+  background: #f0e6fa; 
+} 
+.entrada { 
+  color: #1e8e3e; 
+  font-weight: 600; 
+} 
+.saida { 
+  color: #d93025; 
+  font-weight: 600; 
+} 
+button.excluir { 
+  background: #e74c3c; 
+  color: #fff; 
+  border: none; 
+  padding: 6px 10px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+} 
+button.excluir:hover { 
+  background: #c0392b; 
+}
 
-/* Gráfico */
-#grafico-section {
+/* Gráfico */ 
+#secao-grafico {
   max-height: 400px;
   margin-top: 24px;
   padding: 20px;
   background: #f9f5ff;
   border-radius: 12px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-
   display: flex;
   flex-direction: column;
-  align-items: center;  
+  align-items: center;   
 }
 
-#graficoFinanceiro {
-  max-width: auto;  
-  width: 100%;      
-  height: auto;     
+#grafico-financeiro {
+  max-width: auto;   
+  width: 100%;       
+  height: auto;      
 }
 
 /* Relatório e Relatório ANUAL */
-#relatorio-section { margin-top: 20px; }
-.relatorio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.card.kpi { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-.card.kpi h3 { color: #6a0dad; font-size: 1rem; margin-bottom: 8px; }
-.card.kpi p { font-size: 1.3rem; font-weight: 700; }
+#secao-relatorio { 
+  margin-top: 20px; 
+} 
+.grade-relatorio { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 14px; 
+} 
+.cartao.indicador { 
+  background: #fff; 
+  border: 1px solid #eee; 
+  border-radius: 12px; 
+  padding: 18px; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04); 
+} 
+.cartao.indicador h3 { 
+  color: #6a0dad; 
+  font-size: 1rem; 
+  margin-bottom: 8px; 
+} 
+.cartao.indicador p { 
+  font-size: 1.3rem; 
+  font-weight: 700; 
+} 
 
-#relatorio-anual-section {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f9f5ff;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+#secao-relatorio-anual { 
+  margin-top: 30px; 
+  padding: 20px; 
+  background: #f9f5ff; 
+  border-radius: 12px; 
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06); 
+} 
+
+#tabela-anual { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-bottom: 20px; 
+} 
+#tabela-anual th, #tabela-anual td { 
+  padding: 10px; 
+  border: 1px solid #ddd; 
+  text-align: center; 
+} 
+#tabela-anual th { 
+  background: #f0e6fa; 
+} 
+
+#grafico-anual { 
+  max-width: 100%; 
+  height: 340px; 
+  margin-top: 20px; 
 }
 
-#tabela-anual {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-#tabela-anual th, #tabela-anual td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-#tabela-anual th {
-  background: #f0e6fa;
-}
+.container-botoes-imprimir button, 
+#btn-imprimir-anual { 
+  margin-top: 14px; 
+  padding: 10px 16px; 
+  background: #6a0dad; 
+  color: #fff; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+} 
+.container-botoes-imprimir button:hover, 
+#btn-imprimir-anual:hover { 
+  background: #4b0082; 
+} 
 
-#graficoAnual {
-  max-width: 100%;
-  height: 340px;
-  margin-top: 20px;
-}
+#btn-imprimir-mensal, 
+#btn-imprimir-anual { 
+  margin-top: 14px; 
+  padding: 10px 16px; 
+  background: #6a0dad; 
+  color: #fff; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+} 
 
+#btn-imprimir-mensal:hover, 
+#btn-imprimir-anual:hover { 
+  background: #4b0082; 
+} 
 
-.imprimir-botoes button,
-#btn-imprimir-anual {
-  margin-top: 14px;
-  padding: 10px 16px;
-  background: #6a0dad;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.imprimir-botoes button:hover,
-#btn-imprimir-anual:hover {
-  background: #4b0082;
-}
-
-#btn-imprimir-mensal,
-#btn-imprimir-anual {
-  margin-top: 14px;
-  padding: 10px 16px;
-  background: #6a0dad;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-#btn-imprimir-mensal:hover,
-#btn-imprimir-anual:hover {
-  background: #4b0082;
-}
-
-
-/* Fornecedores */
-#fornecedores-section { margin-top: 26px; }
-.fornecedor-form { display: flex; gap: 10px; margin-bottom: 12px; }
-.fornecedor-form input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-.fornecedor-form button { padding: 10px 16px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; }
-.lista-fornecedores { list-style: none; }
-.lista-fornecedores li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; }
-.lista-fornecedores .remover { background: #e74c3c; color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
-.lista-fornecedores .remover:hover { background: #c0392b; }
-
-/* Login */
-#login-section { display: flex; justify-content: center; align-items: center; height: 80vh; }
-.login-card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.1); width: 320px; text-align: center; }
-.login-card h2 { margin-bottom: 20px; color: #6a0dad; }
-.login-card input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
-.login-card button { width: 100%; padding: 12px; background: #6a0dad; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-.login-card button:hover { background: #4b0082; }
-
-/* Footer */
-footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-size: 0.9em; }
-
-/* Responsividade */
-@media (max-width: 900px) {
-    .kpi-container {
-        grid-template-columns: 1fr;
-    }
-
-    #transacao-section form {
-        grid-template-columns: 1fr;
-    }
-
-    #transacao-section button {
-        grid-column: auto;
-    }
+/* Fornecedores */ 
+#secao-fornecedores { 
+  margin-top: 26px; 
+} 
+.formulario-fornecedor { 
+  display: flex; 
+  gap: 10px; 
+  margin-bottom: 12px; 
+} 
+.formulario-fornecedor input { 
+  flex: 1; 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+} 
+.formulario-fornecedor button { 
+  padding: 10px 16px; 
+  background: #6a0dad; 
+  color: #fff; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+} 
+.lista-fornecedores { 
+  list-style: none; 
+} 
+.lista-fornecedores li { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 10px 12px; 
+  border: 1px solid #eee; 
+  border-radius: 10px; 
+  margin-bottom: 8px; 
+} 
+.lista-fornecedores .remover { 
+  background: #e74c3c; 
+  color: #fff; 
+  border: none; 
+  padding: 6px 10px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+} 
+.lista-fornecedores .remover:hover { 
+  background: #c0392b; 
 }
 
-@media print {
-    header,
-    nav {
-        display: none;
-    }
+/* Login */ 
+#secao-login { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  height: 80vh; 
+} 
+.cartao-login { 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 12px; 
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1); 
+  width: 320px; 
+  text-align: center; 
+} 
+.cartao-login h2 { 
+  margin-bottom: 20px; 
+  color: #6a0dad; 
+} 
+.cartao-login input { 
+  width: 100%; 
+  padding: 10px; 
+  margin-bottom: 15px; 
+  border-radius: 8px; 
+  border: 1px solid #ccc; 
+} 
+.cartao-login button { 
+  width: 100%; 
+  padding: 12px; 
+  background: #6a0dad; 
+  color: #fff; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+} 
+.cartao-login button:hover { 
+  background: #4b0082; 
+} 
 
-    .imprimir-botoes,
-    .form-group {
-        display: none;
-    }
+/* Rodapé */ 
+footer { 
+  text-align: center; 
+  padding: 16px; 
+  margin-top: 20px; 
+  color: #777; 
+  font-size: 0.9em; 
+} 
 
-    main h2 {
-        text-align: center;
-    }
+/* Responsividade */ 
+@media (max-width: 900px) { 
+    .container-indicadores { 
+        grid-template-columns: 1fr; 
+    } 
+
+    #secao-transacao form { 
+        grid-template-columns: 1fr; 
+    } 
+
+    #secao-transacao button { 
+        grid-column: auto; 
+    } 
 }
