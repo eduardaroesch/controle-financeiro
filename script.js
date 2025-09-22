@@ -39,12 +39,6 @@ const listaFornecedores = document.getElementById('lista-fornecedores');
 const inputNovoFornecedor = document.getElementById('novo-fornecedor');
 const btnImprimirMensal = document.getElementById('btn-imprimir-mensal');
 const btnImprimirAnual = document.getElementById('btn-imprimir-anual');
-const camadaModal = document.getElementById('camada-modal');
-const tituloModal = document.getElementById('titulo-modal');
-const mensagemModal = document.getElementById('mensagem-modal');
-const btnModalConfirmar = document.getElementById('btn-modal-confirmar');
-const btnModalCancelar = document.getElementById('btn-modal-cancelar');
-const carregandoSpinner = document.getElementById('carregando-spinner');
 
 // ===================================
 // Variáveis de Estado da Aplicação
@@ -61,16 +55,6 @@ const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' 
 const hojeISO = () => new Date().toISOString().slice(0, 10);
 const yyyymm = (isoDate) => (isoDate || '').slice(0, 7);
 
-function mostrarCarregando() {
-    carregandoSpinner.classList.add('active');
-}
-
-function esconderCarregando() {
-    carregandoSpinner.classList.remove('active');
-}
-
-// A função original foi simplificada para `mostrarAlertaOuConfirmar`
-// já que a modal completa não estava sendo utilizada.
 function mostrarAlertaOuConfirmar(mensagem, ehConfirmacao = false, callbackConfirmacao = null) {
     if (ehConfirmacao) {
         if (confirm(mensagem)) {
@@ -366,7 +350,6 @@ function renderizarFornecedores() {
  * Inicia a aplicação, configurando listeners e buscando dados iniciais.
  */
 function iniciarApp() {
-    mostrarCarregando();
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
 
@@ -379,14 +362,13 @@ function iniciarApp() {
     onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
         transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         atualizarInterface();
-        esconderCarregando();
+
     });
 
     // Sempre que os dados de 'fornecedores' mudam, a lista é atualizada.
     onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
         fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderizarFornecedores();
-        esconderCarregando();
     });
 
     // Configura os outros listeners de eventos (formulários, botões, etc.)
@@ -413,14 +395,6 @@ function iniciarApp() {
     btnImprimirMensal.addEventListener('click', () => lidarComImpressao('secao-relatorio'));
     btnImprimirAnual.addEventListener('click', () => lidarComImpressao('secao-relatorio-anual'));
 
-    camadaModal.addEventListener('click', (e) => {
-      if (e.target === camadaModal) {
-        // A modal completa não é utilizada, por isso esta função permanece
-        // sem um corpo funcional no código principal.
-        // esconderModal(); 
-      }
-    });
-}
-
 // Inicia a aplicação quando o DOM estiver completamente carregado.
 document.addEventListener('DOMContentLoaded', iniciarApp);
+
