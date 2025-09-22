@@ -11,73 +11,72 @@
 
 <header>
     <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
-    <div class="section_logo-container">
+    <div class="container-logo-secao">
       <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
     </div>
 </header>
 
   <nav>
-    <a class="nav-links" href="index.html">Início</a>
-    <a class="nav-links" href="projeto.html">Sobre o Projeto</a>
+    <a class="links-navegacao" href="index.html">Início</a>
+    <a class="links-navegacao" href="projeto.html">Sobre o Projeto</a>
   </nav>
 
-
-  <div class="container">
+  <div class="container-principal">
     <main>
-<section id="transacao-section">
-    <h2>Adicionar Lançamento</h2>
-    <form id="transacao-form">
-        <div class="form-group">
-            <label for="descricao">Descrição</label>
-            <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
-        </div>
-        <div class="form-group">
-            <label for="valor">Valor (R$)</label>
-            <input type="number" id="valor" step="0.01" min="0" required>
-        </div>
-        <div class="form-group">
-            <label for="tipo">Tipo</label>
-            <select id="tipo" required>
-                <option value="entrada">Entrada</option>
-                <option value="saida">Saída</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="data">Data</label>
-            <input type="date" id="data" required>
-        </div>
-        <div class="form-group">
-            <label for="fornecedor">Fornecedor/Origem</label>
-            <select id="fornecedor"></select>
-        </div>
-        <button type="submit" class="btn btn-primary">Adicionar Lançamento</button>
-    </form>
-</section>
+      <section id="secao-transacao">
+          <h2>Adicionar Lançamento</h2>
+          <form id="formulario-transacao">
+              <div class="grupo-formulario">
+                  <label for="descricao">Descrição</label>
+                  <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
+              </div>
+              <div class="grupo-formulario">
+                  <label for="valor">Valor (R$)</label>
+                  <input type="number" id="valor" step="0.01" min="0" required>
+              </div>
+              <div class="grupo-formulario">
+                  <label for="tipo">Tipo</label>
+                  <select id="tipo" required>
+                      <option value="entrada">Entrada</option>
+                      <option value="saida">Saída</option>
+                  </select>
+              </div>
+              <div class="grupo-formulario">
+                  <label for="data">Data</label>
+                  <input type="date" id="data" required>
+              </div>
+              <div class="grupo-formulario">
+                  <label for="fornecedor">Fornecedor/Origem</label>
+                  <select id="fornecedor"></select>
+              </div>
+              <button type="submit" class="btn btn-principal">Adicionar Lançamento</button>
+          </form>
+      </section>
 
-      <section id="relatorio-section">
+      <section id="secao-relatorio">
         <h2>Relatório do Mês</h2>
-        <div class="kpi-container">
-          <div class="card kpi kpi-entradas">
+        <div class="container-indicadores">
+          <div class="cartao indicador indicador-entradas">
             <h3>Total Entradas</h3>
-            <p id="kpi-entradas">R$ 0,00</p>
+            <p id="indicador-entradas">R$ 0,00</p>
           </div>
-          <div class="card kpi kpi-saidas">
+          <div class="cartao indicador indicador-saidas">
             <h3>Total Saídas</h3>
-            <p id="kpi-saidas">R$ 0,00</p>
+            <p id="indicador-saidas">R$ 0,00</p>
           </div>
-          <div class="card kpi kpi-saldo">
+          <div class="cartao indicador indicador-saldo">
             <h3>Saldo do Mês</h3>
-            <p id="kpi-saldo">R$ 0,00</p>
+            <p id="indicador-saldo">R$ 0,00</p>
           </div>
         </div>
-        <div class="imprimir-botoes">
+        <div class="container-botoes-imprimir">
             <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
         </div>
-        <div class="form-group">
+        <div class="grupo-formulario">
           <label for="filtro-mes">Filtrar por Mês</label>
           <input type="month" id="filtro-mes">
         </div>
-        <div class="tabela-container">
+        <div class="container-tabela">
           <table id="tabela-transacoes">
             <thead>
               <tr>
@@ -89,22 +88,22 @@
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody id="tabela-corpo"></tbody>
+            <tbody id="corpo-tabela"></tbody>
           </table>
         </div>
-        <canvas id="graficoFinanceiro" class="mt-4"></canvas>
+        <canvas id="grafico-financeiro" class="mt-4"></canvas>
       </section>
 
-      <section id="fornecedores-section" class="fornecedores-section">
+      <section id="secao-fornecedores" class="secao-fornecedores">
         <h2>Gerenciar Fornecedores</h2>
-        <form id="fornecedor-form" class="fornecedor-form">
+        <form id="formulario-fornecedor" class="formulario-fornecedor">
           <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor" required>
-          <button type="submit" class="btn btn-primary">Adicionar</button>
+          <button type="submit" class="btn btn-principal">Adicionar</button>
         </form>
         <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
       </section>
 
-      <section id="relatorio-anual-section">
+      <section id="secao-relatorio-anual">
         <h2>Relatório Anual</h2>
         <table id="tabela-anual">
           <thead>
@@ -115,7 +114,7 @@
               <th>Saldo</th>
             </tr>
           </thead>
-          <tbody id="tabela-anual-corpo"></tbody>
+          <tbody id="corpo-tabela-anual"></tbody>
           <tfoot>
             <tr>
               <th>Total Anual</th>
@@ -125,26 +124,26 @@
             </tr>
           </tfoot>
         </table>
-        <canvas id="graficoAnual" class="mt-4"></canvas>
-        <div class="imprimir-botoes">
+        <canvas id="grafico-anual" class="mt-4"></canvas>
+        <div class="container-botoes-imprimir">
             <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
         </div>
       </section>
     </main>
   </div>
 
-  <div id="modal-overlay" class="modal-overlay">
-    <div class="modal-content">
-      <h3 id="modal-titulo"></h3>
-      <p id="modal-mensagem"></p>
-      <div class="modal-buttons">
-        <button id="modal-btn-confirmar" class="btn btn-primary">Confirmar</button>
-        <button id="modal-btn-cancelar" class="btn">Cancelar</button>
+  <div id="camada-modal" class="camada-modal">
+    <div class="conteudo-modal">
+      <h3 id="titulo-modal"></h3>
+      <p id="mensagem-modal"></p>
+      <div class="botoes-modal">
+        <button id="btn-modal-confirmar" class="btn btn-principal">Confirmar</button>
+        <button id="btn-modal-cancelar" class="btn">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <div id="loading-spinner">
+  <div id="carregando-spinner">
     <div class="spinner"></div>
   </div>
 
