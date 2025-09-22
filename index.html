@@ -9,12 +9,12 @@
 </head>
 <body>
 
-<header>
+  <header>
     <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
     <div class="container-logo-secao">
       <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
     </div>
-</header>
+  </header>
 
   <nav>
     <a class="links-navegacao" href="index.html">Início</a>
@@ -24,33 +24,33 @@
   <div class="container-principal">
     <main>
       <section id="secao-transacao">
-          <h2>Adicionar Lançamento</h2>
-          <form id="formulario-transacao">
-              <div class="grupo-formulario">
-                  <label for="descricao">Descrição</label>
-                  <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
-              </div>
-              <div class="grupo-formulario">
-                  <label for="valor">Valor (R$)</label>
-                  <input type="number" id="valor" step="0.01" min="0" required>
-              </div>
-              <div class="grupo-formulario">
-                  <label for="tipo">Tipo</label>
-                  <select id="tipo" required>
-                      <option value="entrada">Entrada</option>
-                      <option value="saida">Saída</option>
-                  </select>
-              </div>
-              <div class="grupo-formulario">
-                  <label for="data">Data</label>
-                  <input type="date" id="data" required>
-              </div>
-              <div class="grupo-formulario">
-                  <label for="fornecedor">Fornecedor/Origem</label>
-                  <select id="fornecedor"></select>
-              </div>
-              <button type="submit" class="btn btn-principal">Adicionar Lançamento</button>
-          </form>
+        <h2>Adicionar Lançamento</h2>
+        <form id="formulario-transacao">
+          <div class="grupo-formulario">
+            <label for="descricao">Descrição</label>
+            <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
+          </div>
+          <div class="grupo-formulario">
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" step="0.01" min="0" required>
+          </div>
+          <div class="grupo-formulario">
+            <label for="tipo">Tipo</label>
+            <select id="tipo" required>
+              <option value="entrada">Entrada</option>
+              <option value="saida">Saída</option>
+            </select>
+          </div>
+          <div class="grupo-formulario">
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
+          </div>
+          <div class="grupo-formulario">
+            <label for="fornecedor">Fornecedor/Origem</label>
+            <select id="fornecedor"></select>
+          </div>
+          <button type="submit" class="btn btn-principal">Adicionar Lançamento</button>
+        </form>
       </section>
 
       <section id="secao-relatorio">
@@ -70,12 +70,13 @@
           </div>
         </div>
         <div class="container-botoes-imprimir">
-            <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
+          <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
         </div>
         <div class="grupo-formulario">
           <label for="filtro-mes">Filtrar por Mês</label>
           <input type="month" id="filtro-mes">
         </div>
+        
         <div class="container-tabela">
           <table id="tabela-transacoes">
             <thead>
@@ -91,6 +92,7 @@
             <tbody id="corpo-tabela"></tbody>
           </table>
         </div>
+
         <canvas id="grafico-financeiro" class="mt-4"></canvas>
       </section>
 
@@ -105,28 +107,31 @@
 
       <section id="secao-relatorio-anual">
         <h2>Relatório Anual</h2>
-        <table id="tabela-anual">
-          <thead>
-            <tr>
-              <th>Mês</th>
-              <th>Total Entradas</th>
-              <th>Total Saídas</th>
-              <th>Saldo</th>
-            </tr>
-          </thead>
-          <tbody id="corpo-tabela-anual"></tbody>
-          <tfoot>
-            <tr>
-              <th>Total Anual</th>
-              <th id="total-entradas-anual">R$ 0,00</th>
-              <th id="total-saidas-anual">R$ 0,00</th>
-              <th id="saldo-anual">R$ 0,00</th>
-            </tr>
-          </tfoot>
-        </table>
+        <div class="container-tabela">
+          <table id="tabela-anual">
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Total Entradas</th>
+                <th>Total Saídas</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela-anual"></tbody>
+            <tfoot>
+              <tr>
+                <th>Total Anual</th>
+                <th id="total-entradas-anual">R$ 0,00</th>
+                <th id="total-saidas-anual">R$ 0,00</th>
+                <th id="saldo-anual">R$ 0,00</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
         <canvas id="grafico-anual" class="mt-4"></canvas>
         <div class="container-botoes-imprimir">
-            <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
+          <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
         </div>
       </section>
     </main>
@@ -147,7 +152,14 @@
     <div class="spinner"></div>
   </div>
 
+   <footer>
+    <p>Projeto de Atividade Extensionista da Uninter</p>
+    <p>Desenvolvido por Eduarda Roesch da Silva - RU: 4371718</p>
+    <p>Curso: Análise e Desenvolvimento de Sistemas</p>
+  </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="./script.js"></script>
+
 </body>
 </html>
