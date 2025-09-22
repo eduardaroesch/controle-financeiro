@@ -394,8 +394,6 @@ function iniciarApp() {
 
     btnImprimirMensal.addEventListener('click', () => lidarComImpressao('secao-relatorio'));
     btnImprimirAnual.addEventListener('click', () => lidarComImpressao('secao-relatorio-anual'));
-
+}
 // Inicia a aplicação quando o DOM estiver completamente carregado.
 document.addEventListener('DOMContentLoaded', iniciarApp);
-
-
