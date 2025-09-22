@@ -6,7 +6,7 @@ import { getFirestore, collection, onSnapshot, doc, addDoc, deleteDoc, query } f
 // ===================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA8Yw9wnKcgSK-svf37hnfzXZyDhtbj3Ro",
+  apiKey: "AIzaSyD3Dt4KqqZaK6h7WpzoYtUw8CQfsSKUMlk",
   authDomain: "controle-financeiro-emei.firebaseapp.com",
   projectId: "controle-financeiro-emei",
   storageBucket: "controle-financeiro-emei.firebasestorage.app",
@@ -397,4 +397,5 @@ function iniciarApp() {
 
 // Inicia a aplicação quando o DOM estiver completamente carregado.
 document.addEventListener('DOMContentLoaded', iniciarApp);
+
 
