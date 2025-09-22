@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Mude para 'master' se for a sua branch principal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+
+    - name: Set up Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14' # Use uma versão LTS
+
+    - name: Build project with environment variables
+      run: |
+        # Cria um arquivo JavaScript com a configuração do Firebase,
+        # usando a chave de API do GitHub Secrets.
+        echo "const firebaseConfig = {
+          apiKey: '${{ secrets.FIREBASE_API_KEY }}',
+          authDomain: 'controle-financeiro-emei.firebaseapp.com',
+          projectId: 'controle-financeiro-emei',
+          storageBucket: 'controle-financeiro-emei.firebasestorage.app',
+          messagingSenderId: '520133382523',
+          appId: '1:520133382523:web:952d313fd881bad49cedde'
+        };" > firebase-config.js
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        
