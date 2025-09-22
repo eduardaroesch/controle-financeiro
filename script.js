@@ -23,29 +23,30 @@ const db = getFirestore(app);
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const hojeISO = () => new Date().toISOString().slice(0, 10);
 const yyyymm = (isoDate) => (isoDate || '').slice(0, 7);
-const form = document.getElementById('transacao-form');
+
+const formularioTransacao = document.getElementById('formulario-transacao');
 const inputData = document.getElementById('data');
-const tabelaCorpo = document.getElementById('tabela-corpo');
+const corpoTabela = document.getElementById('corpo-tabela');
 const filtroMes = document.getElementById('filtro-mes');
-const kpiEntradas = document.getElementById('kpi-entradas');
-const kpiSaidas = document.getElementById('kpi-saidas');
-const kpiSaldo = document.getElementById('kpi-saldo');
-const graficoMensalCtx = document.getElementById('graficoFinanceiro').getContext('2d');
-const tabelaAnualCorpo = document.getElementById('tabela-anual').querySelector('tbody');
+const indicadorEntradas = document.getElementById('indicador-entradas');
+const indicadorSaidas = document.getElementById('indicador-saidas');
+const indicadorSaldo = document.getElementById('indicador-saldo');
+const graficoFinanceiroCtx = document.getElementById('grafico-financeiro').getContext('2d');
+const corpoTabelaAnual = document.getElementById('tabela-anual').querySelector('tbody');
 const totalEntradasAnual = document.getElementById('total-entradas-anual');
 const totalSaidasAnual = document.getElementById('total-saidas-anual');
 const saldoAnual = document.getElementById('saldo-anual');
-const formFornecedor = document.getElementById('fornecedor-form');
+const formularioFornecedor = document.getElementById('formulario-fornecedor');
 const listaFornecedores = document.getElementById('lista-fornecedores');
 const inputNovoFornecedor = document.getElementById('novo-fornecedor');
 const btnImprimirMensal = document.getElementById('btn-imprimir-mensal');
 const btnImprimirAnual = document.getElementById('btn-imprimir-anual');
-const modalOverlay = document.getElementById('modal-overlay');
-const modalTitulo = document.getElementById('modal-titulo');
-const modalMensagem = document.getElementById('modal-mensagem');
-const modalBtnConfirmar = document.getElementById('modal-btn-confirmar');
-const modalBtnCancelar = document.getElementById('modal-btn-cancelar');
-const loadingSpinner = document.getElementById('loading-spinner');
+const camadaModal = document.getElementById('camada-modal');
+const tituloModal = document.getElementById('titulo-modal');
+const mensagemModal = document.getElementById('mensagem-modal');
+const btnModalConfirmar = document.getElementById('btn-modal-confirmar');
+const btnModalCancelar = document.getElementById('btn-modal-cancelar');
+const carregandoSpinner = document.getElementById('carregando-spinner');
 
 let transacoes = [];
 let fornecedores = [];
@@ -55,51 +56,50 @@ let graficoAnual;
 // ==========================
 // Funções de UI
 // ==========================
-function showLoadingSpinner() {
-    loadingSpinner.classList.add('active');
+function mostrarCarregando() {
+    carregandoSpinner.classList.add('active');
 }
 
-function hideLoadingSpinner() {
-    loadingSpinner.classList.remove('active');
+function esconderCarregando() {
+    carregandoSpinner.classList.remove('active');
 }
-//alert ao invés de rodapé
-function showModal(message, isConfirm = false, onConfirm = null) {
+
+function mostrarModal(mensagem, isConfirm = false, onConfirm = null) {
     if (isConfirm) {
-        if (confirm(message)) {
+        if (confirm(mensagem)) {
             if (onConfirm) onConfirm();
         }
     } else {
-        alert(message);
+        alert(mensagem);
     }
 }
 
-
-function hideModal() {
-    modalOverlay.classList.remove('active');
+function esconderModal() {
+    camadaModal.classList.remove('active');
 }
 
 // ==========================
 // Funções Firestore
 // ==========================
-const getTransacoesCollection = () => collection(db, `transacoes`);
-const getFornecedoresCollection = () => collection(db, `fornecedores`);
+const getTransacoesCollection = () => collection(db, 'transacoes');
+const getFornecedoresCollection = () => collection(db, 'fornecedores');
 
 async function salvarTransacao(transacao) {
     try {
         await addDoc(getTransacoesCollection(), transacao);
-        showModal("Lançamento salvo com sucesso!");
+        mostrarModal("Lançamento salvo com sucesso!");
     } catch (e) {
-        showModal("Erro ao salvar lançamento: " + e.message, false);
+        mostrarModal("Erro ao salvar lançamento: " + e.message, false);
     }
 }
 
 async function excluirTransacao(id) {
-    showModal("Tem certeza que deseja excluir esta transação?", true, async () => {
+    mostrarModal("Tem certeza que deseja excluir esta transação?", true, async () => {
         try {
             await deleteDoc(doc(getTransacoesCollection(), id));
-            showModal("Lançamento excluído com sucesso!");
+            mostrarModal("Lançamento excluído com sucesso!");
         } catch (e) {
-            showModal("Erro ao excluir lançamento: " + e.message, false);
+            mostrarModal("Erro ao excluir lançamento: " + e.message, false);
         }
     });
 }
@@ -109,17 +109,17 @@ async function salvarFornecedor(nome) {
         await addDoc(getFornecedoresCollection(), { nome });
         inputNovoFornecedor.value = '';
     } catch (e) {
-        showModal("Erro ao salvar fornecedor: " + e.message, false);
+        mostrarModal("Erro ao salvar fornecedor: " + e.message, false);
     }
 }
 
 async function excluirFornecedor(id) {
-    showModal("Tem certeza que deseja excluir este fornecedor?", true, async () => {
+    mostrarModal("Tem certeza que deseja excluir este fornecedor?", true, async () => {
         try {
             await deleteDoc(doc(getFornecedoresCollection(), id));
-            showModal("Fornecedor excluído com sucesso!");
+            mostrarModal("Fornecedor excluído com sucesso!");
         } catch (e) {
-            showModal("Erro ao excluir fornecedor: " + e.message, false);
+            mostrarModal("Erro ao excluir fornecedor: " + e.message, false);
         }
     });
 }
@@ -127,38 +127,33 @@ async function excluirFornecedor(id) {
 // ==========================
 // Funções de Impressão
 // ==========================
-function handlePrint(sectionId) {
-    showModal("Deseja imprimir este relatório?", true, () => {
-        const sectionsToHide = document.querySelectorAll('main > section:not(#' + sectionId + ')');
-        const originalDisplay = [];
+function lidarComImpressao(secaoId) {
+    mostrarModal("Deseja imprimir este relatório?", true, () => {
+        const secoesParaOcultar = document.querySelectorAll('main > section:not(#' + secaoId + ')');
+        const displayOriginal = [];
         
-        // Esconder seções não relacionadas
-        sectionsToHide.forEach(section => {
-            originalDisplay.push(section.style.display);
-            section.style.display = 'none';
+        secoesParaOcultar.forEach(secao => {
+            displayOriginal.push(secao.style.display);
+            secao.style.display = 'none';
         });
 
-        // Esconder o botão de imprimir
-        const imprimirBotoes = document.querySelector(`#${sectionId} .imprimir-botoes`);
-        if (imprimirBotoes) {
-            imprimirBotoes.style.display = 'none';
+        const botoesImprimir = document.querySelector(`#${secaoId} .container-botoes-imprimir`);
+        if (botoesImprimir) {
+            botoesImprimir.style.display = 'none';
         }
         
-        // Adicionar um pequeno atraso para o navegador processar as mudanças de estilo
         setTimeout(() => {
             window.print();
         }, 100);
 
-        // Ocultar modal de confirmação
-        hideModal();
+        esconderModal();
 
-        // Restaurar seções após a impressão
         window.addEventListener('afterprint', () => {
-            sectionsToHide.forEach((section, index) => {
-                section.style.display = originalDisplay[index];
+            secoesParaOcultar.forEach((secao, indice) => {
+                secao.style.display = displayOriginal[indice];
             });
-            if (imprimirBotoes) {
-                imprimirBotoes.style.display = '';
+            if (botoesImprimir) {
+                botoesImprimir.style.display = '';
             }
         });
     });
@@ -168,10 +163,10 @@ function handlePrint(sectionId) {
 // Funções de Renderização
 // ==========================
 function atualizarInterface() {
-    const alvoMes = filtroMes.value;
-    const lista = transacoes.filter(t => yyyymm(t.data) === alvoMes);
+    const mesAlvo = filtroMes.value;
+    const lista = transacoes.filter(t => yyyymm(t.data) === mesAlvo);
 
-    tabelaCorpo.innerHTML = '';
+    corpoTabela.innerHTML = '';
     let totalEntradas = 0, totalSaidas = 0;
 
     lista.sort((a, b) => a.data.localeCompare(b.data));
@@ -185,15 +180,15 @@ function atualizarInterface() {
             <td class="${t.tipo}">${t.tipo}</td>
             <td><button class="excluir" data-id="${t.id}" onclick="excluirTransacao('${t.id}')">Excluir</button></td>
         `;
-        tabelaCorpo.appendChild(tr);
+        corpoTabela.appendChild(tr);
         if (t.tipo === 'entrada') totalEntradas += t.valor;
         else totalSaidas += t.valor;
     });
 
     const saldo = totalEntradas - totalSaidas;
-    kpiEntradas.textContent = BRL.format(totalEntradas);
-    kpiSaidas.textContent = BRL.format(totalSaidas);
-    kpiSaldo.textContent = BRL.format(saldo);
+    indicadorEntradas.textContent = BRL.format(totalEntradas);
+    indicadorSaidas.textContent = BRL.format(totalSaidas);
+    indicadorSaldo.textContent = BRL.format(saldo);
 
     atualizarGraficoMensal(lista);
     renderizarTabelaAnual();
@@ -205,7 +200,7 @@ function atualizarGraficoMensal(lista) {
     const entradas = lista.filter(t => t.tipo === 'entrada').reduce((sum, t) => sum + t.valor, 0);
     const saidas = lista.filter(t => t.tipo === 'saida').reduce((sum, t) => sum + t.valor, 0);
 
-    graficoMensal = new Chart(graficoMensalCtx, {
+    graficoMensal = new Chart(graficoFinanceiroCtx, {
         type: 'bar',
         data: {
             labels: ['Entradas', 'Saídas'],
@@ -243,7 +238,7 @@ function renderizarTabelaAnual() {
         }
     });
 
-    tabelaAnualCorpo.innerHTML = '';
+    corpoTabelaAnual.innerHTML = '';
     const meses = Object.keys(dadosAnuais).sort();
     meses.forEach(mesAno => {
         const dados = dadosAnuais[mesAno];
@@ -255,7 +250,7 @@ function renderizarTabelaAnual() {
             <td>${BRL.format(dados.saidas)}</td>
             <td>${BRL.format(saldo)}</td>
         `;
-        tabelaAnualCorpo.appendChild(tr);
+        corpoTabelaAnual.appendChild(tr);
     });
 
     totalEntradasAnual.textContent = BRL.format(totalEntradasAnualCalc);
@@ -271,7 +266,7 @@ function atualizarGraficoAnual(dadosAnuais) {
     const entradas = meses.map(m => dadosAnuais[m].entradas);
     const saidas = meses.map(m => dadosAnuais[m].saidas);
 
-    graficoAnual = new Chart(document.getElementById('graficoAnual').getContext('2d'), {
+    graficoAnual = new Chart(document.getElementById('grafico-anual').getContext('2d'), {
         type: 'line',
         data: {
             labels: meses,
@@ -299,14 +294,14 @@ function atualizarGraficoAnual(dadosAnuais) {
 }
 
 function renderizarFornecedores() {
-    const fornecedorSelect = document.getElementById('fornecedor');
-    if (fornecedorSelect) {
-        fornecedorSelect.innerHTML = '<option value="">-- Selecione --</option>';
+    const seletorFornecedor = document.getElementById('fornecedor');
+    if (seletorFornecedor) {
+        seletorFornecedor.innerHTML = '<option value="">-- Selecione --</option>';
         fornecedores.forEach(f => {
             const option = document.createElement('option');
             option.value = f.nome;
             option.textContent = f.nome;
-            fornecedorSelect.appendChild(option);
+            seletorFornecedor.appendChild(option);
         });
     }
 
@@ -321,30 +316,27 @@ function renderizarFornecedores() {
 // ==========================
 // Listeners e Inicialização
 // ==========================
-function startApp() {
-    showLoadingSpinner();
+function iniciarApp() {
+    mostrarCarregando();
     inputData.value = hojeISO();
     filtroMes.value = yyyymm(hojeISO());
 
-    // Expondo funções globais para o HTML
     window.excluirTransacao = excluirTransacao;
     window.excluirFornecedor = excluirFornecedor;
     
-    // Listeners do Firebase
     onSnapshot(query(getTransacoesCollection()), (querySnapshot) => {
         transacoes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         atualizarInterface();
-        hideLoadingSpinner();
+        esconderCarregando();
     });
 
     onSnapshot(query(getFornecedoresCollection()), (querySnapshot) => {
         fornecedores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderizarFornecedores();
-        hideLoadingSpinner();
+        esconderCarregando();
     });
 
-    // Listeners de eventos
-    form.addEventListener('submit', (e) => {
+    formularioTransacao.addEventListener('submit', (e) => {
         e.preventDefault();
         const transacao = {
             descricao: document.getElementById('descricao').value,
@@ -354,25 +346,24 @@ function startApp() {
             fornecedor: document.getElementById('fornecedor').value || null
         };
         salvarTransacao(transacao);
-        form.reset();
+        formularioTransacao.reset();
     });
 
-    formFornecedor.addEventListener('submit', (e) => {
+    formularioFornecedor.addEventListener('submit', (e) => {
         e.preventDefault();
         salvarFornecedor(inputNovoFornecedor.value);
     });
 
     filtroMes.addEventListener('change', atualizarInterface);
 
-    btnImprimirMensal.addEventListener('click', () => handlePrint('relatorio-section'));
-    btnImprimirAnual.addEventListener('click', () => handlePrint('relatorio-anual-section'));
+    btnImprimirMensal.addEventListener('click', () => lidarComImpressao('secao-relatorio'));
+    btnImprimirAnual.addEventListener('click', () => lidarComImpressao('secao-relatorio-anual'));
 
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) {
-        hideModal();
+    camadaModal.addEventListener('click', (e) => {
+      if (e.target === camadaModal) {
+        esconderModal();
       }
     });
 }
 
-document.addEventListener('DOMContentLoaded', startApp);
-
+document.addEventListener('DOMContentLoaded', iniciarApp);
