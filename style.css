@@ -290,3 +290,19 @@ footer { text-align: center; padding: 16px; margin-top: 20px; color: #777; font-
         grid-column: auto;
     }
 }
+
+@media print {
+    header,
+    nav {
+        display: none;
+    }
+
+    .imprimir-botoes,
+    .form-group {
+        display: none;
+    }
+
+    main h2 {
+        text-align: center;
+    }
+}
