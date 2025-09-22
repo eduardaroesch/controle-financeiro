@@ -1,4 +1,34 @@
 /* =================================== */
+/* Definição de Variáveis de Cores */
+/* =================================== */
+:root {
+  /* Cores Principais do Tema */
+  --cor-primaria: #6a0dad; /* Roxo principal, para botões e títulos */
+  --cor-secundaria: #9b59b6; /* Roxo para o gradiente de fundo */
+  --cor-primaria-escura: #4b0082; /* Roxo mais escuro para o hover */
+  --cor-terciaria: #8821b7; /* Tom de roxo mais claro para o título principal */
+  
+  /* Cores de Fundo e Elementos de UI */
+  --cor-fundo: #f4f0fa; /* Fundo principal da página */
+  --cor-fundo-card: #fff; /* Fundo de cartões e seções */
+  --cor-fundo-claro: #f0e6fa; /* Fundo de cabeçalhos de tabela e rodapé */
+  --cor-borda: #ccc; /* Borda de inputs */
+  --cor-borda-clara: #eee; /* Borda clara para tabelas e cartões */
+  --cor-borda-escura: #ddd; /* Borda um pouco mais escura */
+  
+  /* Cores de Texto */
+  --cor-texto-principal: #333; /* Texto padrão */
+  --cor-texto-claro: #fff; /* Texto em fundos escuros */
+  --cor-texto-secundario: #6a0dad; /* Texto em botões e rodapé */
+  
+  /* Cores de Status */
+  --cor-entrada: #1e8e3e; /* Verde para 'Entradas' */
+  --cor-saida: #d93025; /* Vermelho para 'Saídas' */
+  --cor-saida-hover: #c0392b; /* Vermelho escuro para o hover de 'saída' */
+  --cor-excluir: #e74c3c; /* Vermelho para o botão de excluir */
+}
+
+/* =================================== */
 /* Estilos Gerais e Layout da Página */
 /* =================================== */
 * { 
@@ -9,14 +39,14 @@
 } 
 
 body { 
-  background: #f4f0fa; 
-  color: #333; 
+  background: var(--cor-fundo); 
+  color: var(--cor-texto-principal); 
   line-height: 1.6; 
 } 
 
 header { 
-  background: linear-gradient(135deg, #f4ecf9, #9b59b6); 
-  color: #fff; 
+  background: linear-gradient(135deg, var(--cor-fundo-claro), var(--cor-secundaria)); 
+  color: var(--cor-texto-claro); 
   padding: 24px; 
   text-align: center; 
   display: flex; 
@@ -67,22 +97,22 @@ nav {
 
 a { 
   text-decoration: none; 
-  text-decoration-color: white; 
-  color: #9b59b6; 
+  text-decoration-color: var(--cor-texto-claro); 
+  color: var(--cor-secundaria); 
 } 
 
 a:hover { 
-  color:#6a0dad; 
+  color: var(--cor-primaria); 
   text-decoration: underline; 
   text-underline-offset: 1rem; 
-  text-decoration-color: var(--borda-clara); 
+  text-decoration-color: var(--cor-borda-clara); 
 } 
 
 .links-navegacao-sobre:hover { 
-  color:#fff; 
+  color: var(--cor-texto-claro); 
   text-decoration: underline; 
   text-underline-offset: 1rem; 
-  text-decoration-color: var(--borda-clara); 
+  text-decoration-color: var(--cor-borda-clara); 
 } 
 
 /* =================================== */
@@ -92,17 +122,17 @@ main {
   max-width: 1100px; 
   margin: 20px auto; 
   padding: 20px; 
-  background: #fff; 
+  background: var(--cor-fundo-card); 
   border-radius: 14px; 
   box-shadow: 0 6px 18px rgba(0,0,0,0.08); 
 } 
 
 .titulo-principal { 
-  color:#8821b7; 
+  color: var(--cor-terciaria); 
 } 
 
 h1, h2 { 
-  color: #6a0dad; 
+  color: var(--cor-primaria); 
   text-align: center; 
 } 
 
@@ -137,14 +167,14 @@ ul, li {
 #secao-transacao label { 
   font-size: 0.9rem; 
   font-weight: 600; 
-  color: #6a0dad; 
+  color: var(--cor-primaria); 
   margin-bottom: 6px; 
 } 
 
 #secao-transacao input, 
 #secao-transacao select { 
   padding: 10px; 
-  border: 1px solid #ccc; 
+  border: 1px solid var(--cor-borda); 
   border-radius: 8px; 
   width: 100%; 
 } 
@@ -152,8 +182,8 @@ ul, li {
 #secao-transacao button { 
   grid-column: 1 / -1; 
   padding: 12px 16px; 
-  background: #6a0dad; 
-  color: #fff; 
+  background: var(--cor-primaria); 
+  color: var(--cor-texto-claro); 
   border: none; 
   border-radius: 10px; 
   cursor: pointer; 
@@ -161,7 +191,7 @@ ul, li {
 } 
 
 #secao-transacao button:hover { 
-  background: #4b0082; 
+  background: var(--cor-primaria-escura); 
 } 
 
 .formulario-fornecedor { 
@@ -173,14 +203,14 @@ ul, li {
 .formulario-fornecedor input { 
   flex: 1; 
   padding: 10px; 
-  border: 1px solid #ccc; 
+  border: 1px solid var(--cor-borda); 
   border-radius: 8px; 
 } 
 
 .formulario-fornecedor button { 
   padding: 10px 16px; 
-  background: #6a0dad; 
-  color: #fff; 
+  background: var(--cor-primaria); 
+  color: var(--cor-texto-claro); 
   border: none; 
   border-radius: 10px; 
   cursor: pointer; 
@@ -204,11 +234,11 @@ ul, li {
 #tabela-transacoes th, #tabela-transacoes td { 
   padding: 12px; 
   text-align: center; 
-  border-bottom: 1px solid #eee; 
+  border-bottom: 1px solid var(--cor-borda-clara); 
 } 
 
 #tabela-transacoes th { 
-  background: #f0e6fa; 
+  background: var(--cor-fundo-claro); 
 } 
 
 #tabela-anual { 
@@ -219,22 +249,22 @@ ul, li {
 
 #tabela-anual th, #tabela-anual td { 
   padding: 10px; 
-  border: 1px solid #ddd; 
+  border: 1px solid var(--cor-borda-escura); 
   text-align: center; 
 } 
 
 #tabela-anual th { 
-  background: #f0e6fa; 
+  background: var(--cor-fundo-claro); 
 } 
 
 /* Estilos de status */
 .entrada { 
-  color: #1e8e3e; 
+  color: var(--cor-entrada); 
   font-weight: 600; 
 } 
 
 .saida { 
-  color: #d93025; 
+  color: var(--cor-saida); 
   font-weight: 600; 
 } 
 
@@ -248,15 +278,15 @@ ul, li {
 } 
 
 .cartao.indicador { 
-  background: #fff; 
-  border: 1px solid #eee; 
+  background: var(--cor-fundo-card); 
+  border: 1px solid var(--cor-borda-clara); 
   border-radius: 12px; 
   padding: 18px; 
   box-shadow: 0 2px 6px rgba(0,0,0,0.04); 
 } 
 
 .cartao.indicador h3 { 
-  color: #6a0dad; 
+  color: var(--cor-primaria); 
   font-size: 1rem; 
   margin-bottom: 8px; 
 } 
@@ -284,8 +314,8 @@ ul, li {
 .container-botoes-imprimir button, 
 .btn { 
   padding: 10px 16px; 
-  background: #6a0dad; 
-  color: #fff; 
+  background: var(--cor-primaria); 
+  color: var(--cor-texto-claro); 
   border: none; 
   border-radius: 10px; 
   cursor: pointer; 
@@ -293,12 +323,12 @@ ul, li {
 
 .container-botoes-imprimir button:hover, 
 .btn:hover { 
-  background: #4b0082; 
+  background: var(--cor-primaria-escura); 
 } 
 
 button.excluir, .remover { 
-  background: #e74c3c; 
-  color: #fff; 
+  background: var(--cor-excluir); 
+  color: var(--cor-texto-claro); 
   border: none; 
   padding: 6px 10px; 
   border-radius: 8px; 
@@ -306,8 +336,26 @@ button.excluir, .remover {
 } 
 
 button.excluir:hover, .remover:hover { 
-  background: #c0392b; 
+  background: var(--cor-saida-hover); 
 } 
+
+/* =================================== */
+/* Rodapé */
+/* =================================== */
+footer {
+  text-align: center;
+  padding: 24px;
+  background-color: var(--cor-fundo-claro);
+  border-top: 1px solid var(--cor-borda-escura);
+  margin-top: 40px;
+  color: var(--cor-texto-secundario);
+  font-size: 0.9rem;
+}
+
+footer p {
+  margin: 0;
+  padding: 4px 0;
+}
 
 /* =================================== */
 /* Responsividade */
@@ -337,3 +385,4 @@ button.excluir:hover, .remover:hover {
     width: 100%;
   }
 }
+
