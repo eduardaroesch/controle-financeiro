@@ -3,149 +3,359 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle Financeiro</title>
+  <meta name="description" content="Sistema de controle de caixa da EMEI Criança Feliz">
+  <title>Controle de Caixa | EMEI Criança Feliz</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/png" href="assets/Logo-EMEI.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Controle de Caixa - Página inicial">
+        <span class="brand-logo-wrap">
+          <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+        </span>
+        <span class="brand-copy">
+          <strong>Controle de Caixa</strong>
+          <span>EMEI Criança Feliz</span>
+        </span>
+      </a>
 
-  <header>
-    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
-    <div class="container-logo-secao">
-      <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a class="nav-link active" href="index.html">Dashboard</a>
+        <a class="nav-link" href="projeto.html">Sobre o projeto</a>
+      </nav>
     </div>
   </header>
 
-  <nav>
-    <a class="links-navegacao" href="index.html">Início</a>
-    <a class="links-navegacao" href="projeto.html">Sobre o Projeto</a>
-  </nav>
+  <main class="container-principal">
+    <section class="hero dashboard-hero" id="secao-dashboard">
+      <div>
+        <p class="eyebrow">GESTÃO FINANCEIRA ESCOLAR</p>
+        <h1>Visão geral do caixa</h1>
+        <p class="hero-description">Registre as movimentações, acompanhe o saldo e organize as informações para a prestação de contas.</p>
+      </div>
 
-  <div class="container-principal">
-    <main>
-      <section id="secao-transacao">
-        <h2>Adicionar Lançamento</h2>
-        <form id="formulario-transacao">
-          <div class="grupo-formulario">
-            <label for="descricao">Descrição</label>
-            <input type="text" id="descricao" placeholder="Ex: Doação de pais" required>
-          </div>
-          <div class="grupo-formulario">
-            <label for="valor">Valor (R$)</label>
-            <input type="number" id="valor" step="0.01" min="0" required>
-          </div>
-          <div class="grupo-formulario">
-            <label for="tipo">Tipo</label>
-            <select id="tipo" required>
-              <option value="entrada">Entrada</option>
-              <option value="saida">Saída</option>
-            </select>
-          </div>
-          <div class="grupo-formulario">
-            <label for="data">Data</label>
-            <input type="date" id="data" required>
-          </div>
-          <div class="grupo-formulario">
-            <label for="fornecedor">Fornecedor/Origem</label>
-            <select id="fornecedor"></select>
-          </div>
-          <button type="submit" class="btn btn-principal">Adicionar Lançamento</button>
-        </form>
-      </section>
+      <div class="month-selector-card">
+        <label for="filtro-mes">Período visualizado</label>
+        <div class="month-selector-row">
+          <input type="month" id="filtro-mes" aria-label="Selecionar mês do relatório">
+          <button type="button" id="btn-mes-atual" class="btn btn-secondary">Mês atual</button>
+        </div>
+      </div>
+    </section>
 
-      <section id="secao-relatorio">
-        <h2>Relatório do Mês</h2>
-        <div class="container-indicadores">
-          <div class="cartao indicador indicador-entradas">
-            <h3>Total Entradas</h3>
-            <p id="indicador-entradas">R$ 0,00</p>
-          </div>
-          <div class="cartao indicador indicador-saidas">
-            <h3>Total Saídas</h3>
-            <p id="indicador-saidas">R$ 0,00</p>
-          </div>
-          <div class="cartao indicador indicador-saldo">
-            <h3>Saldo do Mês</h3>
-            <p id="indicador-saldo">R$ 0,00</p>
+    <section class="kpi-grid" aria-label="Resumo financeiro">
+      <article class="kpi-card kpi-entradas">
+        <div class="kpi-icon" aria-hidden="true">↗</div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total de entradas</span>
+          <strong id="indicador-entradas">R$ 0,00</strong>
+          <span class="kpi-caption" id="caption-entradas">No mês selecionado</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-saidas">
+        <div class="kpi-icon" aria-hidden="true">↘</div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total de saídas</span>
+          <strong id="indicador-saidas">R$ 0,00</strong>
+          <span class="kpi-caption" id="caption-saidas">No mês selecionado</span>
+        </div>
+      </article>
+
+      <article class="kpi-card kpi-saldo">
+        <div class="kpi-icon" aria-hidden="true">R$</div>
+        <div class="kpi-content">
+          <span class="kpi-label">Saldo do mês</span>
+          <strong id="indicador-saldo">R$ 0,00</strong>
+          <span class="kpi-caption" id="caption-saldo">Entradas menos saídas</span>
+        </div>
+      </article>
+    </section>
+
+    <section id="secao-transacao" class="section-card form-card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">REGISTRO</p>
+          <h2>Novo lançamento</h2>
+          <p>Preencha os dados abaixo para registrar uma entrada ou saída.</p>
+        </div>
+        <span class="section-badge">Atualização em tempo real</span>
+      </div>
+
+      <form id="formulario-transacao" class="transaction-form">
+        <div class="form-field field-description">
+          <label for="descricao">Descrição</label>
+          <input type="text" id="descricao" placeholder="Ex.: Doação de pais" maxlength="120" autocomplete="off" required>
+        </div>
+
+        <div class="form-field field-value">
+          <label for="valor">Valor</label>
+          <div class="input-prefix-wrap">
+            <span aria-hidden="true">R$</span>
+            <input type="number" id="valor" step="0.01" min="0.01" inputmode="decimal" placeholder="0,00" required>
           </div>
         </div>
-        <div class="container-botoes-imprimir">
-          <button id="btn-imprimir-mensal" class="btn">Imprimir Relatório Mensal</button>
+
+        <div class="form-field field-type">
+          <span class="field-label">Tipo</span>
+          <div class="segmented-control" role="group" aria-label="Tipo do lançamento">
+            <button type="button" class="segment-btn selected" data-tipo="entrada" aria-pressed="true">+ Entrada</button>
+            <button type="button" class="segment-btn" data-tipo="saida" aria-pressed="false">− Saída</button>
+          </div>
+          <select id="tipo" class="visually-hidden" aria-hidden="true" tabindex="-1">
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
         </div>
-        <div class="grupo-formulario">
-          <label for="filtro-mes">Filtrar por Mês</label>
-          <input type="month" id="filtro-mes">
+
+        <div class="form-field field-date">
+          <label for="data">Data</label>
+          <input type="date" id="data" required>
         </div>
-        
-        <div class="container-tabela">
+
+        <div class="form-field field-supplier">
+          <label for="fornecedor">Fornecedor / origem</label>
+          <select id="fornecedor">
+            <option value="">Sem fornecedor informado</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-salvar-transacao">＋ Adicionar lançamento</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="secao-relatorio" class="section-card report-card">
+      <div class="section-heading report-heading">
+        <div>
+          <p class="eyebrow">MOVIMENTAÇÕES</p>
+          <h2 id="titulo-relatorio-mensal">Lançamentos do mês</h2>
+          <p id="subtitulo-relatorio-mensal">Acompanhe entradas e saídas registradas no período.</p>
+        </div>
+        <button id="btn-imprimir-mensal" type="button" class="btn btn-secondary">Imprimir relatório</button>
+      </div>
+
+      <div class="report-summary-strip">
+        <div>
+          <span>Movimentações</span>
+          <strong id="contador-movimentacoes">0 lançamentos</strong>
+        </div>
+        <div>
+          <span>Saldo</span>
+          <strong id="saldo-strip">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="table-shell">
+        <div class="table-scroll">
           <table id="tabela-transacoes">
+            <caption class="visually-hidden">Lançamentos financeiros do mês selecionado</caption>
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Fornecedor</th>
-                <th>Valor</th>
-                <th>Tipo</th>
-                <th>Ações</th>
+                <th scope="col">Data</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Fornecedor / origem</th>
+                <th scope="col">Tipo</th>
+                <th scope="col" class="numeric">Valor</th>
+                <th scope="col" class="actions-heading">Ações</th>
               </tr>
             </thead>
             <tbody id="corpo-tabela"></tbody>
           </table>
         </div>
+      </div>
 
-        <canvas id="grafico-financeiro" class="mt-4"></canvas>
-      </section>
+      <div class="chart-card">
+        <div class="chart-heading">
+          <div>
+            <p class="eyebrow">RESUMO VISUAL</p>
+            <h3>Entradas x saídas</h3>
+          </div>
+          <span id="periodo-grafico-mensal" class="chart-period">—</span>
+        </div>
+        <div class="chart-container chart-container-monthly">
+          <canvas id="grafico-financeiro" aria-label="Gráfico comparando entradas e saídas do mês"></canvas>
+        </div>
+      </div>
+    </section>
 
-      <section id="secao-fornecedores" class="secao-fornecedores">
-        <h2>Gerenciar Fornecedores</h2>
-        <form id="formulario-fornecedor" class="formulario-fornecedor">
-          <input type="text" id="novo-fornecedor" placeholder="Novo fornecedor" required>
-          <button type="submit" class="btn btn-principal">Adicionar</button>
-        </form>
+    <section id="secao-fornecedores" class="section-card suppliers-card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CADASTRO</p>
+          <h2>Fornecedores e origens</h2>
+          <p>Mantenha a lista pronta para facilitar os próximos lançamentos.</p>
+        </div>
+      </div>
+
+      <form id="formulario-fornecedor" class="supplier-form">
+        <div class="form-field">
+          <label for="novo-fornecedor">Nome do fornecedor ou origem</label>
+          <input type="text" id="novo-fornecedor" placeholder="Ex.: Papelaria ABC" maxlength="100" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar fornecedor</button>
+      </form>
+
+      <div class="supplier-list-shell">
         <ul id="lista-fornecedores" class="lista-fornecedores"></ul>
-      </section>
+      </div>
+    </section>
 
-      <section id="secao-relatorio-anual">
-        <h2>Relatório Anual</h2>
-        <div class="container-tabela">
+    <section id="secao-relatorio-anual" class="section-card report-card annual-card">
+      <div class="section-heading report-heading">
+        <div>
+          <p class="eyebrow">PRESTAÇÃO DE CONTAS</p>
+          <h2>Resumo anual</h2>
+          <p>Veja a evolução financeira mês a mês e filtre o ano desejado.</p>
+        </div>
+        <div class="annual-actions">
+          <div class="year-selector">
+            <label for="filtro-ano">Ano</label>
+            <select id="filtro-ano" aria-label="Selecionar ano do relatório anual"></select>
+          </div>
+          <button id="btn-imprimir-anual" type="button" class="btn btn-secondary">Imprimir anual</button>
+        </div>
+      </div>
+
+      <div class="annual-kpis">
+        <div>
+          <span>Entradas no ano</span>
+          <strong id="total-entradas-anual">R$ 0,00</strong>
+        </div>
+        <div>
+          <span>Saídas no ano</span>
+          <strong id="total-saidas-anual">R$ 0,00</strong>
+        </div>
+        <div>
+          <span>Saldo do ano</span>
+          <strong id="saldo-anual">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="table-shell">
+        <div class="table-scroll">
           <table id="tabela-anual">
+            <caption class="visually-hidden">Resumo financeiro anual</caption>
             <thead>
               <tr>
-                <th>Mês</th>
-                <th>Total Entradas</th>
-                <th>Total Saídas</th>
-                <th>Saldo</th>
+                <th scope="col">Mês</th>
+                <th scope="col" class="numeric">Entradas</th>
+                <th scope="col" class="numeric">Saídas</th>
+                <th scope="col" class="numeric">Saldo</th>
               </tr>
             </thead>
             <tbody id="corpo-tabela-anual"></tbody>
             <tfoot>
               <tr>
-                <th>Total Anual</th>
-                <th id="total-entradas-anual">R$ 0,00</th>
-                <th id="total-saidas-anual">R$ 0,00</th>
-                <th id="saldo-anual">R$ 0,00</th>
+                <th scope="row">Total do ano</th>
+                <td id="total-entradas-anual-rodape" class="numeric">R$ 0,00</td>
+                <td id="total-saidas-anual-rodape" class="numeric">R$ 0,00</td>
+                <td id="saldo-anual-rodape" class="numeric">R$ 0,00</td>
               </tr>
             </tfoot>
           </table>
         </div>
-        
-        <canvas id="grafico-anual" class="mt-4"></canvas>
-        <div class="container-botoes-imprimir">
-          <button id="btn-imprimir-anual" class="btn">Imprimir Relatório Anual</button>
-        </div>
-      </section>
-    </main>
-  </div>
+      </div>
 
-   <footer>
-    <p>Projeto de Atividade Extensionista da Uninter</p>
-    <p>Desenvolvido por Eduarda Roesch da Silva - RU: 4371718</p>
-    <p>Curso: Análise e Desenvolvimento de Sistemas</p>
+      <div class="chart-card">
+        <div class="chart-heading">
+          <div>
+            <p class="eyebrow">EVOLUÇÃO</p>
+            <h3>Entradas e saídas ao longo do ano</h3>
+          </div>
+          <span id="periodo-grafico-anual" class="chart-period">—</span>
+        </div>
+        <div class="chart-container chart-container-annual">
+          <canvas id="grafico-anual" aria-label="Gráfico da evolução anual de entradas e saídas"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>Controle de Caixa — EMEI Criança Feliz</strong>
+        <p>Projeto de Atividade Extensionista — UNINTER</p>
+      </div>
+      <a href="projeto.html">Conheça o projeto →</a>
+    </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="./script.js"></script>
+  <dialog id="dialog-confirmacao" class="app-dialog confirmation-dialog">
+    <div class="dialog-content">
+      <div class="dialog-icon warning" aria-hidden="true">!</div>
+      <p class="eyebrow">CONFIRMAÇÃO</p>
+      <h2 id="dialog-confirmacao-titulo">Confirmar exclusão</h2>
+      <p id="dialog-confirmacao-mensagem">Tem certeza que deseja continuar?</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" data-dialog-cancelar>Cancelar</button>
+        <button type="button" class="btn btn-danger" data-dialog-confirmar>Confirmar exclusão</button>
+      </div>
+    </div>
+  </dialog>
 
+  <dialog id="dialog-edicao" class="app-dialog">
+    <form id="form-edicao" method="dialog" class="dialog-form">
+      <div class="section-heading dialog-heading">
+        <div>
+          <p class="eyebrow">ALTERAÇÃO</p>
+          <h2>Editar lançamento</h2>
+          <p>Atualize os dados e salve as alterações.</p>
+        </div>
+        <button type="button" class="dialog-close" data-dialog-edicao-fechar aria-label="Fechar">×</button>
+      </div>
+
+      <input type="hidden" id="editar-id">
+
+      <div class="dialog-grid">
+        <div class="form-field full">
+          <label for="editar-descricao">Descrição</label>
+          <input type="text" id="editar-descricao" maxlength="120" required>
+        </div>
+
+        <div class="form-field">
+          <label for="editar-valor">Valor</label>
+          <div class="input-prefix-wrap">
+            <span aria-hidden="true">R$</span>
+            <input type="number" id="editar-valor" step="0.01" min="0.01" required>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="editar-data">Data</label>
+          <input type="date" id="editar-data" required>
+        </div>
+
+        <div class="form-field full">
+          <label for="editar-tipo">Tipo</label>
+          <select id="editar-tipo" required>
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
+        </div>
+
+        <div class="form-field full">
+          <label for="editar-fornecedor">Fornecedor / origem</label>
+          <select id="editar-fornecedor">
+            <option value="">Sem fornecedor informado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" data-dialog-edicao-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar alterações</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
-

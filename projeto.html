@@ -1,67 +1,140 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sobre o Projeto</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sobre o projeto de controle de caixa da EMEI Criança Feliz">
+  <title>Sobre o projeto | Controle de Caixa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/Logo-EMEI.png">
 </head>
-<body>
-  <header>
-    <h1 class="titulo-principal">Sistema de Controle de Caixa - EMEI Criança Feliz</h1>
-    <div class="container-logo-secao">
-      <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+<body class="about-page">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Controle de Caixa - Página inicial">
+        <span class="brand-logo-wrap">
+          <img src="assets/Logo-EMEI.png" alt="Logo da EMEI Criança Feliz" class="logo-emei">
+        </span>
+        <span class="brand-copy">
+          <strong>Controle de Caixa</strong>
+          <span>EMEI Criança Feliz</span>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link active" href="projeto.html" aria-current="page">Sobre o projeto</a>
+      </nav>
     </div>
   </header>
 
-  <nav>
-    <a class="links-navegacao" href="index.html">Início</a>
-    <a class="links-navegacao" href="projeto.html">Sobre o Projeto</a>
-  </nav>
-
-  <main>
-    <section id="sobre" class="card">
-      <h2>Sobre o Projeto</h2>
-      <p>
-        Este sistema foi desenvolvido para a Atividade Extensionista do curso de Análise e Desenvolvimento de Sistemas da Uninter.<br>
-        Foi pensado e desenvolvido em parceria com a EMEI Criança Feliz de Sinimbu/RS. <br>
-        O objetivo é apoiar a direção escolar no controle financeiro e na
-        prestação de contas transparente, podendo apresentar de forma clara ao CPM (Círculo de Pais e Mestres) da instituição.
-      </p>
-      <p>
-        O projeto está alinhado aos ODS 4 (Educação de Qualidade)
-        e ODS 16 (Paz, Justiça e Instituições Eficazes)
-      </p>
+  <main class="container-principal about-main">
+    <section class="about-hero">
+      <div>
+        <p class="eyebrow">ATIVIDADE EXTENSIONISTA</p>
+        <h1>Um controle de caixa pensado para a rotina da escola.</h1>
+        <p class="hero-description">O projeto transforma um processo financeiro que pode ser feito de forma manual em uma ferramenta simples para registrar, consultar e apresentar as movimentações com mais clareza.</p>
+      </div>
+      <a class="btn btn-primary" href="index.html">Abrir dashboard</a>
     </section>
 
-    <section id="metodologia" class="card">
-      <h2>Metodologia e Vínculo com a Comunidade</h2>
-      <ul>
-        <li>Reuniões com a direção da EMEI Criança Feliz;</li>
-        <li>Levantamento das principais dificuldades;</li>
-        <li>Testes da ferramenta com os responsáveis;</li>
-      </ul>
+    <section class="about-grid">
+      <article class="section-card about-card about-card-featured">
+        <span class="about-number">01</span>
+        <p class="eyebrow">PROBLEMA</p>
+        <h2>Por que o sistema foi criado?</h2>
+        <p>O controle de entradas, saídas e fornecedores precisa ser fácil de atualizar e, ao mesmo tempo, claro para consultas internas e para a prestação de contas ao CPM.</p>
+      </article>
+
+      <article class="section-card about-card">
+        <span class="about-number">02</span>
+        <p class="eyebrow">SOLUÇÃO</p>
+        <h2>O que a ferramenta oferece?</h2>
+        <ul class="about-list">
+          <li>Registro de entradas e saídas.</li>
+          <li>Consulta por mês e por ano.</li>
+          <li>Resumo de entradas, despesas e saldo.</li>
+          <li>Cadastro de fornecedores e origens.</li>
+          <li>Relatórios imprimíveis e gráficos de acompanhamento.</li>
+        </ul>
+      </article>
     </section>
 
-    <section id="etica" class="card">
-      <h2>Ética, Privacidade e Inclusão</h2>
-      <ul>
-        <li>Privacidade: os dados são armazenados em um banco de dados online seguro.</li>
-        <li>Acessibilidade: interface simples, relatórios imprimíveis.</li>
-        <li>Inclusão: linguagem clara para a direção e o CPM da instituição.</li>
-      </ul>
+    <section class="section-card about-card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">VÍNCULO COM A COMUNIDADE</p>
+          <h2>Desenvolvimento orientado pela necessidade real</h2>
+          <p>O projeto foi pensado em parceria com a EMEI Criança Feliz, considerando a rotina administrativa e a necessidade de uma visualização financeira mais organizada.</p>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span>1</span>
+          <strong>Levantamento</strong>
+          <p>Identificação das principais dificuldades do controle financeiro.</p>
+        </div>
+        <div class="step-card">
+          <span>2</span>
+          <strong>Desenvolvimento</strong>
+          <p>Construção da solução com tecnologias web e banco de dados em nuvem.</p>
+        </div>
+        <div class="step-card">
+          <span>3</span>
+          <strong>Validação</strong>
+          <p>Testes da ferramenta e ajustes de acordo com a utilização.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <article class="section-card about-card">
+        <p class="eyebrow">TECNOLOGIAS</p>
+        <h2>Como o sistema foi construído</h2>
+        <div class="tag-list" aria-label="Tecnologias utilizadas">
+          <span>HTML5</span>
+          <span>CSS3</span>
+          <span>JavaScript</span>
+          <span>Firebase Firestore</span>
+          <span>Chart.js</span>
+          <span>GitHub Pages</span>
+        </div>
+      </article>
+
+      <article class="section-card about-card">
+        <p class="eyebrow">ODS</p>
+        <h2>Contribuição para os objetivos de desenvolvimento sustentável</h2>
+        <div class="ods-list">
+          <div class="ods-item">
+            <strong>ODS 4</strong>
+            <span>Educação de Qualidade</span>
+          </div>
+          <div class="ods-item">
+            <strong>ODS 16</strong>
+            <span>Paz, Justiça e Instituições Eficazes</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-card about-card privacy-card">
+      <div>
+        <p class="eyebrow">PRIVACIDADE E ACESSIBILIDADE</p>
+        <h2>Clareza também faz parte da solução.</h2>
+      </div>
+      <p>A interface utiliza linguagem direta, organização visual consistente e relatórios que podem ser impressos. O acesso aos dados financeiros deve ser controlado pelas regras de segurança configuradas no Firebase.</p>
     </section>
   </main>
 
-   <footer>
-    <p>Projeto de Atividade Extensionista da Uninter</p>
-    <p>Desenvolvido por Eduarda Roesch da Silva - RU: 4371718</p>
-    <p>Curso: Análise e Desenvolvimento de Sistemas</p>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>Controle de Caixa — EMEI Criança Feliz</strong>
+        <p>Projeto de Atividade Extensionista — UNINTER</p>
+      </div>
+      <a href="index.html">Voltar ao dashboard →</a>
+    </div>
   </footer>
-
 </body>
 </html>
-
-
-
-
